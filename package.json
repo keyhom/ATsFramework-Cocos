@@ -1,0 +1,25 @@
+{
+  "name": "aframework-cocos",
+  "version": "0.0.1",
+  "description": "The editor for ATsFramework-Cocos",
+  "author": {
+    "name": "Jeremy Chen",
+    "email": "jeremy7rd@outlook.com"
+  },
+  "runtime-resource": {
+    "path": "dist",
+    "name": "assets"
+  },
+  "reload": {
+    "ignore": [
+      "src/**/*",
+      "dist/**/*"
+    ]
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-typescript": "^5.0.1",
+    "typescript": "^3.6.2"
+  }
+}

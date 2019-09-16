@@ -1,5 +1,5 @@
 {
-  "name": "aframework-cocos",
+  "name": "atsframework-cocos",
   "version": "0.0.1",
   "description": "The editor for ATsFramework-Cocos",
   "author": {
@@ -7,7 +7,7 @@
     "email": "jeremy7rd@outlook.com"
   },
   "runtime-resource": {
-    "path": "dist",
+    "path": "src",
     "name": "assets"
   },
   "reload": {

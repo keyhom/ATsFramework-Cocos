@@ -80,7 +80,7 @@ Vue.component('procedure-inspector', {
     },
     methods: {
         allProcedureNames() {
-            return cc.js.getClassByName("ProcedureComponent")._registerProcedures.map(f => { return f.name; });
+            return cc.js.getClassByName("ProcedureComponent").getAllProcedureNames();
         },
         onEntranceChange(event) {
             let idx = parseInt(event.detail.value);

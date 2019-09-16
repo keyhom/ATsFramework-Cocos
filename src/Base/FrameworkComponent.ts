@@ -12,7 +12,7 @@ type LinkLike<T> = {
     next: LinkLike<T>,
 };
 
-export abstract class FrameworkComponent extends cc.Component {
+export default abstract class FrameworkComponent extends cc.Component {
 
     private static s_theFrameworkComponents : {
         first: LinkLike<FrameworkComponent>, last: LinkLike<FrameworkComponent>
@@ -88,4 +88,5 @@ export abstract class FrameworkComponent extends cc.Component {
     }
 
 } // class FrameworkComponent
+
 

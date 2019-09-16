@@ -1,4 +1,4 @@
-import { FrameworkComponent } from "../dist/Core";
+import FrameworkComponent from "../Base/FrameworkComponent";
 
 const { ccclass, property, disallowMultiple, menu } = cc._decorator;
 

@@ -1,6 +1,11 @@
-export /* static */ class Helper {
+const g_pHelpers: { [key: string]: Function } = {};
 
-    private static s_pHelpers: { [key: string]: Function } = {};
+export function helper(constructor: Function): void {
+	let className: string = cc.js.getClassName(constructor);
+	g_pHelpers[className] = constructor;
+} // function helper
+
+export default /* static */ class Helper {
 
     static createHelper<T extends cc.Component>(helperClassName: string, customHelper: T): T;
     static createHelper<T extends cc.Component>(helperClassName: string, customHelper: T, index: number): T;
@@ -8,12 +13,12 @@ export /* static */ class Helper {
         index = index || 0; // undefined || 0 => 0
         let v_pHelper: T = null;
         if (helperClassName) {
-            for (const k in this.s_pHelpers) {
+            for (const k in g_pHelpers) {
                 if (k === helperClassName) {
                     let v_pNode: cc.PrivateNode = new cc.PrivateNode();
                     let v_pClassType: Function = cc.js.getClassByName(helperClassName);
-                    if (null == v_pClassType && helperClassName in this.s_pHelpers) {
-                        v_pClassType = this.s_pHelpers[helperClassName];
+                    if (null == v_pClassType && helperClassName in g_pHelpers) {
+                        v_pClassType = g_pHelpers[helperClassName];
                     }
                     return v_pNode.addComponent(v_pClassType as new() => T) as T;
                 }
@@ -28,4 +33,5 @@ export /* static */ class Helper {
     }
 
 } // class Helper
+
 

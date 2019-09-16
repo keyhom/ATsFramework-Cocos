@@ -1,4 +1,4 @@
-import { FrameworkComponent } from './Core';
+import FrameworkComponent from "./FrameworkComponent";
 
 const { ccclass, property, disallowMultiple, menu } = cc._decorator;
 const { FrameworkModule } = atsframework;

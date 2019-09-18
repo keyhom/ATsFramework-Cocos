@@ -53,6 +53,11 @@ export default class BaseComponent extends FrameworkComponent {
         cc.dynamicAtlasManager.enabled = false;
     }
 
+    onLoad(): void {
+        super.onLoad();
+        cc.game.addPersistRootNode(this.node);
+    }
+
     onEnable(): void {
         this.frameRate = this.frameRate;
         this.speedMultipiler = this.speedMultipiler;
@@ -66,6 +71,7 @@ export default class BaseComponent extends FrameworkComponent {
 
     onDestroy() {
         FrameworkModule.shutdown();
+        cc.game.removePersistRootNode(this.node);
     }
 
     pause() {

@@ -4,7 +4,7 @@ type IUIForm = atsframework.IUIForm;
 type IUIGroup = atsframework.IUIGroup;
 type UserData = atsframework.UserData;
 
-const { ccclass, property, disallowMultiple, menu } = cc._decorator;
+const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIForm extends cc.Component implements IUIForm {

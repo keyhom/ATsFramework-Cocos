@@ -5,11 +5,13 @@ const { ccclass, property, menu, disallowMultiple } = cc._decorator;
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/Event')
-export class EventComponent extends FrameworkComponent {
+export default class EventComponent extends FrameworkComponent {
 
     private m_pEventManager: atsframework.EventManager = null;
 
     onLoad(): void {
+        super.onLoad();
+
         this.m_pEventManager = atsframework.FrameworkModule.getOrAddModule(atsframework.EventManager);
         if (null == this.m_pEventManager) {
             throw new Error("Event manager is invalid.");
@@ -61,7 +63,8 @@ export class EventComponent extends FrameworkComponent {
     // emit(type: string, arg1?: any, arg2?: any, arg3?: any, arg4?: any, arg5?: any): void {
     emit(type: atsframework.EventID, ... args: any[]): void {
         // this.node.emit(type, arg1, arg2, arg3, arg4, arg5);
-        this.m_pEventManager.emit.call(null, type, args);
+        args.unshift(type);
+        this.m_pEventManager.emit.apply(this.m_pEventManager, args);
     }
 
     // dispatchEvent(event: cc.Event): void {

@@ -2,7 +2,7 @@ import Helper from "../Utility/Helper";
 import UIForm from "./UIForm";
 import UIFormHelperBase from "./UIFormHelperBase";
 import UIGroupHelperBase from "./UIGroupHelperBase";
-import { EventComponent } from "../Event/EventComponent";
+import EventComponent from "../Event/EventComponent";
 import FrameworkComponent from "../Base/FrameworkComponent";
 
 const { ccclass, property, menu, inspector, disallowMultiple } = cc._decorator;
@@ -110,6 +110,7 @@ export default class UIComponent extends FrameworkComponent {
     onLoad(): void {
         super.onLoad();
         this.m_rUIManager = FrameworkModule.getOrAddModule(UIManager);
+
         if (null == this.m_rUIManager) {
             cc.error('UI manager is invalid.');
             return;
@@ -119,6 +120,8 @@ export default class UIComponent extends FrameworkComponent {
         this.m_rUIManager.openUIFormFailure.add(this.onOpenUIFormFailure.bind(this));
         this.m_rUIManager.openUIFormUpdate.add(this.onOpenUIFormUpdate.bind(this));
         this.m_rUIManager.closeUIFormComplete.add(this.onCloseUIFormComplete.bind(this));
+
+        this.m_rUIManager.resourceManager = FrameworkModule.getOrAddModule(atsframework.ResourceManager);
     }
 
     onDestroy(): void {

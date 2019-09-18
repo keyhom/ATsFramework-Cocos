@@ -4,7 +4,6 @@ const { ccclass, property, disallowMultiple, menu } = cc._decorator;
 
 type UserData = atsframework.UserData;
 
-@ccclass
 export default abstract class UIFormLogic extends cc.Component {
 
     private m_bAvailable: boolean = false;

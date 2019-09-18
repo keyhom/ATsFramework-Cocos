@@ -312,6 +312,39 @@ declare namespace atsframework {
         hasResourceGroup(resourceGroupName: string): boolean;
     } // interface IResourceManager.
 
+    export class ResourceManager extends FrameworkModule implements IResourceManager {
+        resourceGroup: IResourceGroup;
+        resourceLoader: IResourceLoader;
+        readonly priority: number;
+
+        hasAsset(assetName: string): boolean;
+
+        loadAsset(assetName: string, loadAssetCallbacks: LoadAssetCallbacks): void;
+        loadAsset(assetName: string, loadAssetCallbacks: LoadAssetCallbacks, userData: UserData): void;
+
+        loadAsset<T>(assetName: string, assetType: AssetType<T>, loadAssetCallbacks: LoadAssetCallbacks): void;
+        loadAsset<T>(assetName: string, assetType: AssetType<T>, loadAssetCallbacks: LoadAssetCallbacks, userData: UserData): void;
+
+        loadAsset<T>(assetName: string, priority: number, loadAssetCallbacks: LoadAssetCallbacks): void;
+        loadAsset<T>(assetName: string, priority: number, loadAssetCallbacks: LoadAssetCallbacks, userData: UserData): void;
+
+        loadAsset<T>(assetName: string, assetType: AssetType<T>, priority: number, loadAssetCallbacks: LoadAssetCallbacks): void;
+        loadAsset<T>(assetName: string, assetType: AssetType<T>, priority: number, loadAssetCallbacks: LoadAssetCallbacks, userData: UserData): void;
+
+        unloadAsset<T>(asset: T): void;
+
+        loadScene(sceneAssetName: string, loadSceneCallbacks: LoadSceneCallbacks): void;
+        loadScene(sceneAssetName: string, loadSceneCallbacks: LoadSceneCallbacks, userData: UserData): void;
+
+        loadScene(sceneAssetName: string, priority: number, loadSceneCallbacks: LoadSceneCallbacks): void;
+        loadScene(sceneAssetName: string, priority: number, loadSceneCallbacks: LoadSceneCallbacks, userData: UserData): void;
+
+        unloadScene(sceneAssetName: string, unloadSceneCallbacks: UnloadSceneCallbacks): void;
+        unloadScene(sceneAssetName: string, unloadSceneCallbacks: UnloadSceneCallbacks, userData: UserData): void;
+
+        hasResourceGroup(resourceGroupName: string): boolean;
+    } // class ResourceManager
+
     export interface IUIGroup {
         name: string;
         depth: number;

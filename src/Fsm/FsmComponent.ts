@@ -10,6 +10,7 @@ export default class FsmComponent extends FrameworkComponent {
     private m_pFsmManager: atsframework.FsmManager;
 
     onLoad(): void {
+        super.onLoad();
         this.m_pFsmManager = atsframework.FrameworkModule.getOrAddModule(atsframework.FsmManager);
         if (null == this.m_pFsmManager) {
             throw new Error("FSM manager is invalid.");

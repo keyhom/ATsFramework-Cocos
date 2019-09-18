@@ -52,7 +52,7 @@ declare namespace atsframework {
     export type LoadConfigDependencyAssetEventHandler = LoadAssetDependencyCallback;
 
     export interface IConfigHelper {
-        loadConfig(configAssetName: string, loadType: LoadType, userData: UserData): boolean;
+        loadConfig(configAsset: object, loadType: LoadType, userData: UserData): boolean;
 
         parseConfig(text: string, userData: UserData): boolean;
         parseConfig(buffer: ArrayBuffer, userData: UserData): boolean;

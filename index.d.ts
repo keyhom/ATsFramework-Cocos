@@ -1,7 +1,7 @@
 declare namespace atsframework {
 
-    export type UserData = string | number | boolean | object;
-    export type Value = boolean | string | number;
+    export type UserData = string | number | boolean | object | null;
+    export type Value = boolean | string | number | null;
 
     export enum LoadType {
         Text, Bytes, Stream
@@ -24,9 +24,9 @@ declare namespace atsframework {
     }
 
     export class EventHandler<T> {
-        has(fn: T): boolean;
-        add(fn: T): void;
-        remove(fn: T): void;
+        has(fn: T, target?: any): boolean;
+        add(fn: T, target?: any): void;
+        remove(fn: T, target?: any): void;
         iter(fn: (item: T) => void): void;
         clear(): void;
         isValid: boolean;
@@ -34,14 +34,14 @@ declare namespace atsframework {
     }
 
     export abstract class FrameworkModule {
-        static getModule<T extends FrameworkModule>(type: new() => T): T;
+        static getModule<T extends FrameworkModule>(type: new() => T): T | null;
         static getOrAddModule<T extends FrameworkModule>(type: new () => T): T;
-        static removeModule<T extends FrameworkModule>(type: new () => T): T;
+        static removeModule<T extends FrameworkModule>(type: new () => T): T | null;
 
         static update(elapsed: number, realElapsed: number): void;
         static shutdown(): void;
 
-        protected get priority(): number;
+        protected priority: number;
         protected abstract update(elapsed: number, realElapsed: number): void;
         protected abstract shutdown(): void;
     } // class FrameworkMdoule.
@@ -82,7 +82,7 @@ declare namespace atsframework {
         parseConfig(text: string): boolean;
         parseConfig(text: string, userData: UserData): boolean;
         parseConfig(buffer: ArrayBuffer): boolean;
-        parseConfig(buffer, ArrayBuffer, userData: UserData): boolean;
+        parseConfig(buffer: ArrayBuffer, userData: UserData): boolean;
 
         hasConfig(configName: string): boolean;
         addConfig(configName: string, value: Value): boolean;
@@ -98,7 +98,7 @@ declare namespace atsframework {
 
     export class DataNodeManager extends FrameworkModule {
 
-        protected udpate(elapsed: number, realElapsed: number): void;
+        protected update(elapsed: number, realElapsed: number): void;
         protected shutdown(): void;
 
     } // class DataNodeManager
@@ -110,11 +110,18 @@ declare namespace atsframework {
         readonly priority: number;
 
         count(eventId: EventID): number;
+
         check(eventId: EventID): boolean;
         check(eventId: EventID, handler: Function): boolean;
+        check(eventId: EventID, handler: Function, target: any): boolean;
+
         on(eventId: EventID, handler: Function): void;
+        on(eventId: EventID, handler: Function, target: any): void;
+
         off(eventId: EventID, handler: Function): void;
-        emit(eventId, ... args: any[]): void;
+        off(eventId: EventID, handler: Function, target: any): void;
+
+        emit(eventId: EventID, ... args: any[]): void;
 
         protected update(elapsed: number, realElapsed: number): void;
         protected shutdown(): void;
@@ -140,8 +147,9 @@ declare namespace atsframework {
         protected onUpdate(fsm: Fsm<T>, elapsed: number, realElapsed: number): void;
         protected onLeave(fsm: Fsm<T>): void;
         protected onLeave(fsm: Fsm<T>, shutdown: boolean): void;
+        protected onDestroy(fsm: Fsm<T>): void;
 
-        protected changeState<TState extends FsmState<T>>(fsm: Fsm<T>, type: new() => TSTate): void;
+        protected changeState<TState extends FsmState<T>>(fsm: Fsm<T>, type: new() => TState): void;
         protected on(eventId: EventID, eventHandler: FsmEventHandler<T>): void;
         protected off(eventId: EventID, eventHandler: FsmEventHandler<T>): void;
         protected emit(fsm: Fsm<T>, sender: object, eventId: EventID, userData: UserData): void;
@@ -158,15 +166,16 @@ declare namespace atsframework {
         readonly isDestroyed: boolean;
         readonly currentState: FsmState<T>;
         readonly currentStateName: string;
+        readonly currentStateTime: number;
 
-        start<TSTate extends FsmState<T>>(type: new() => TState): void;
+        start<TState extends FsmState<T>>(type: new() => TState): void;
         hasState<TState extends FsmState<T>>(type: new() => TState): boolean;
-        getState<TState extends FsmState<T>>(type: new() => TSTate): TState;
+        getState<TState extends FsmState<T>>(type: new() => TState): TState | null;
         getAllStates(): FsmState<T>[];
 
-        changeState<TSTate extends FsmState<T>>(type: new() => TState): void;
+        changeState<TState extends FsmState<T>>(type: new() => TState): void;
 
-        getData<DT>(name: string): DT;
+        getData<DT>(name: string): DT | null;
         setData<DT>(name: string, data: DT): void;
         removeData(name: string): boolean;
 
@@ -181,7 +190,7 @@ declare namespace atsframework {
         readonly count: number;
 
         getAllFsms(): FsmBase[];
-        getFsm<T>(nameOrType: string | (new () => T)): FsmBase;
+        getFsm<T>(nameOrType: string | (new () => T)): FsmBase | null;
 
         hasFsm<T>(ownerOrType: string | (new () => T)): boolean;
         createFsm<T>(name: string, owner: T, states: FsmState<T>[]): Fsm<T>;
@@ -208,7 +217,7 @@ declare namespace atsframework {
         initialize(fsmManager: FsmManager, procedures: ProcedureBase[]): void;
         startProcedure<T extends ProcedureBase>(obj: T): void;
         hasProcedure<T extends ProcedureBase>(type: new() => T): boolean;
-        getProcedure<T extends ProcedureBase>(type: new() => T): T;
+        getProcedure<T extends ProcedureBase>(type: new() => T): T | null;
 
         protected update(elapsed: number, realElapsed: number): void;
         protected shutdown(): void;
@@ -343,18 +352,65 @@ declare namespace atsframework {
         unloadScene(sceneAssetName: string, unloadSceneCallbacks: UnloadSceneCallbacks, userData: UserData): void;
 
         hasResourceGroup(resourceGroupName: string): boolean;
+
+        protected update(elapsed: number, realElapsed: number): void;
+        protected shutdown(): void;
+
     } // class ResourceManager
+
+    export type LoadSceneSuccessEventHandler = LoadSceneSuccessCallback;
+    export type LoadSceneFailureEventHandler = (sceneAssetName: string, errorMessage: string, userData: UserData);
+    export type LoadSceneUpdateEventHandler = LoadSceneUpdateCallback;
+    export type LoadSceneDependencyAssetEventHandler = LoadSceneAssetDependencyCallback;
+    export type UnloadSceneSuccessEventHandler = UnloadSceneSuccessCallback;
+    export type UnloadSceneFailureEventHandler = UnloadSceneFailureCallback;
+
+    export class SceneManager extends FrameworkModule {
+        priority: number;
+        loadSceneSuccess: EventHandler<LoadSceneSuccessEventHandler>;
+        loadSceneFailure: EventHandler<LoadSceneFailureEventHandler>;
+        loadSceneUpdate: EventHandler<LoadSceneUpdateEventHandler>;
+        loadSceneDependencyAsset: EventHandler<LoadSceneDependencyAssetEventHandler>;
+        unloadSceneSuccess: EventHandler<UnloadSceneSuccessEventHandler>;
+        unloadSceneFailure: EventHandler<UnloadSceneFailureEventHandler>;
+
+        resourceManager: IResourceManager;
+
+        sceneIsLoading(sceneAssetName: string): boolean;
+        sceneIsLoaded(sceneAssetName: string): boolean;
+        sceneIsUnloading(sceneAssetName: string): boolean;
+
+        getLoadedSceneAssetNames(): string[];
+        getLoadedSceneAssetNames(results: string[]): string[];
+
+        getLoadingSceneAssetNames(): string[];
+        getLoadingSceneAssetNames(results: string[]): string[];
+
+        getUnloadingSceneAssetNames(): string[];
+        getUnloadingSceneAssetNames(results: string[]): string[];
+
+        loadScene(sceneAssetName: string): void;
+        loadScene(sceneAssetName: string, priority: number): void;
+        loadScene(sceneAssetName: string, userData: UserData): void;
+        loadScene(sceneAssetName: string, priority: number, userData: UserData): void;
+
+        unloadScene(sceneAssetName: string): void;
+        unloadScene(sceneAssetName: string, userData: UserData): void;
+
+        protected update(elapsed: number, realElapsed: number): void;
+        protected shutdown(): void;
+    } // class SceneManager
 
     export interface IUIGroup {
         name: string;
         depth: number;
         pause: boolean;
         uiFormCount: number;
-        currentUIForm: IUIForm;
+        currentUIForm: IUIForm | null;
         helper: IUIGroupHelper;
 
         hasUIForm(idOrAssetName: number | string): boolean;
-        getUIForm(idOrAssetName: number | string): IUIForm;
+        getUIForm(idOrAssetName: number | string): IUIForm | null;
         getUIForms(assetName: string): Array<IUIForm>;
         getAllUIForms(): Array<IUIForm>;
     } // interface IUIGroup
@@ -383,7 +439,7 @@ declare namespace atsframework {
     export interface IUIFormHelper {
         instantiateUIForm<T extends object>(uiFormAsset: T): T;
         createUIForm(uiFormInstance: object, uiGroup: IUIGroup, userData: UserData): IUIForm;
-        releaseUIForm<T extends object>(uiFormAsset: T, uiFormInstance: object): void;
+        releaseUIForm<T extends object>(uiFormAsset: T, uiFormInstance: object | null): void;
     } // interface IUIFormHelper
 
     export interface IUIGroupHelper {
@@ -466,7 +522,7 @@ declare namespace atsframework {
 
         getUIForms(uiFormAssetName: string): IUIForm[];
 
-        getUIForm(serialIdOrAssetName: number | string): IUIForm;
+        getUIForm(serialIdOrAssetName: number | string): IUIForm | null;
 
         hasUIForm(serialIdOrAssetName: number | string): boolean;
 
@@ -481,7 +537,7 @@ declare namespace atsframework {
 
         hasUIGroup(uiGroupName: string): boolean;
 
-        getUIGroup(uiGroupName: string): IUIGroup;
+        getUIGroup(uiGroupName: string): IUIGroup | null;
 
         addUIGroup(uiGroupName: string, uiGroupHelper: IUIGroupHelper): boolean;
         addUIGroup(uiGroupName: string, uiGroupDepth: number, uiGroupHelper: IUIGroupHelper): boolean;
@@ -495,7 +551,7 @@ declare namespace atsframework {
         pause: boolean;
 
         readonly uiFormCount: number;
-        readonly currentUIForm: IUIForm;
+        readonly currentUIForm: IUIForm | null;
         readonly helper: IUIGroupHelper;
 
         update(elapsed: number, realElapsed: number): void;
@@ -506,7 +562,7 @@ declare namespace atsframework {
 
         hasUIForm(idOrAssetName: string | number): boolean;
 
-        getUIForm(idOrAssetName: string | number): IUIForm;
+        getUIForm(idOrAssetName: string | number): IUIForm | null;
 
         getUIForms(assetName: string): IUIForm[];
 

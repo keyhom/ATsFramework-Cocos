@@ -41,9 +41,10 @@ export function procedure(constructor: new () => ProcedureBase) {
 @inspector('packages://atsframework-cocos/inspector/procedure-inspector.js')
 export default class ProcedureComponent extends FrameworkComponent {
 
-    private static getAllProcedureNames(): string[] {
+    private static getAllProcedureNames<T extends ProcedureBase>(): string[] {
         return g_pRegisterProcedures.map((value: ProcedureType) => {
-            return (<any>value).name;
+            // return (<any>value).name;
+            return cc.js.getClassName(value);
         });
     }
 
@@ -95,7 +96,8 @@ export default class ProcedureComponent extends FrameworkComponent {
                 break;
             }
 
-            v_rProcedures[i] = Object.create(v_rProcedureType.prototype);
+            v_rProcedures[i] = new v_rProcedureType();
+            // Object.create(v_rProcedureType.prototype);
             if (null == v_rProcedures[i]) {
                 cc.error(`Can not create procedure instance: '${name}'`);
             }
@@ -113,6 +115,11 @@ export default class ProcedureComponent extends FrameworkComponent {
         const v_pFsmModule: FsmManager = FrameworkModule.getOrAddModule(FsmManager);
 
         this.m_pProcedureManager.initialize(v_pFsmModule, v_rProcedures);
+
+        cc.director.once(cc.Director.EVENT_AFTER_DRAW, this.doProcedureStart.bind(this));
+    }
+
+    private doProcedureStart(): void {
         this.m_pProcedureManager.startProcedure(this.m_pEntranceProcedure);
     }
 

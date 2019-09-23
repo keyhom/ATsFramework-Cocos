@@ -33,9 +33,9 @@ export default class EventComponent extends FrameworkComponent {
     }
 
     // on<T extends Function>(type: string, callback: T, target?: any, useCapture?: boolean): T {
-    on<T extends Function>(type: atsframework.EventID, callback: T): void {
+    on<T extends Function>(type: atsframework.EventID, callback: T, target?: any): void {
         // return this.node.on(type, callback, target, useCapture);
-        this.m_pEventManager.on(type, callback);
+        this.m_pEventManager.on(type, callback, target);
     }
 
     // once<T extends Function>(type: string, callback: T, target?: any, useCapture?: boolean): T {
@@ -45,9 +45,9 @@ export default class EventComponent extends FrameworkComponent {
     // }
 
     // off(type: string, callback?: Function, target?: any, useCapture?: boolean): void {
-    off(type: atsframework.EventID, callback?: Function): void {
+    off(type: atsframework.EventID, callback?: Function, target?: any): void {
         // this.node.off(type, callback, target, useCapture);
-        this.m_pEventManager.off(type, callback);
+        this.m_pEventManager.off(type, callback, target);
     }
 
     // targetOff(target: any): void {

@@ -20,15 +20,40 @@ export type LoadConfigSuccessEventArgs = {
     loadType: atsframework.LoadType,
     duration: number,
     userData: atsframework.UserData
-};
+} // type LoadConfigSuccessEventArgs
+
+export type LoadConfigFailureEventArgs = {
+    configName: string,
+    configAssetName: string,
+    loadType: atsframework.LoadType,
+    errorMessage: string,
+    userData: atsframework.UserData
+} // type LoadConfigFailureEventArgs
+
+export type LoadConfigUpdateEventArgs = {
+    configName: string,
+    configAssetName: string,
+    loadType: atsframework.LoadType,
+    progress: number,
+    userData: atsframework.UserData
+} // type LoadConfigUpdateEventArgs
+
+export type LoadConfigDependecyAssetEventArgs = {
+    configName: string,
+    configAssetName: string,
+    dependencyAssetName: string,
+    loadedCount: number,
+    totalCount: number,
+    userData: atsframework.UserData
+} // type LoadConfigDependecyAssetEventArgs
 
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/Config')
 export default class ConfigComponent extends FrameworkComponent {
 
-    private m_pConfigManager: ConfigManager = null;
-    private m_pEventComponent: EventComponent = null;
+    private m_pConfigManager!: ConfigManager;
+    private m_pEventComponent!: EventComponent;
 
     @property
     private m_bEnableLoadConfigUpdateEvent: boolean = false;
@@ -49,16 +74,26 @@ export default class ConfigComponent extends FrameworkComponent {
             throw new Error("Config manager is invalid.");
         }
 
-        this.m_pConfigManager.loadConfigSuccess.add(this.onLoadConfigSuccess);
-        this.m_pConfigManager.loadConfigFailure.add(this.onLoadConfigFailure);
+        this.m_pConfigManager.loadConfigSuccess.add(this.onLoadConfigSuccess, this);
+        this.m_pConfigManager.loadConfigFailure.add(this.onLoadConfigFailure, this);
 
         if (this.m_bEnableLoadConfigUpdateEvent) {
-            this.m_pConfigManager.loadConfigUpdate.add(this.onLoadConfigUpdate);
+            this.m_pConfigManager.loadConfigUpdate.add(this.onLoadConfigUpdate, this);
         }
 
         if (this.m_bEnableLoadConfigDependencyAssetEvent) {
-            this.m_pConfigManager.loadConfigDependencyAsset.add(this.onLoadConfigDependencyAsset);
+            this.m_pConfigManager.loadConfigDependencyAsset.add(this.onLoadConfigDependencyAsset, this);
         }
+    }
+
+    onDestroy(): void {
+        this.m_pConfigManager.loadConfigSuccess.remove(this.onLoadConfigSuccess);
+        this.m_pConfigManager.loadConfigFailure.remove(this.onLoadConfigFailure);
+        this.m_pConfigManager.loadConfigUpdate.remove(this.onLoadConfigUpdate);
+        this.m_pConfigManager.loadConfigDependencyAsset.remove(this.onLoadConfigDependencyAsset);
+
+        this.m_pEventComponent = null;
+        this.m_pConfigManager = null;
     }
 
     start(): void {
@@ -140,50 +175,56 @@ export default class ConfigComponent extends FrameworkComponent {
     private onLoadConfigSuccess(configAssetName: string, loadType: atsframework.LoadType, duration: number, userData: atsframework.UserData): void {
         const v_pInfo: LoadConfigInfo = userData as LoadConfigInfo;
 
-        this.m_pEventComponent.emit("onLoadConfigSuccess", /*LoadConfigSuccessEventArgs*/ {
+        this.m_pEventComponent.emit("loadConfigSuccess", /*LoadConfigSuccessEventArgs*/ {
             configName: v_pInfo.configName,
             configAssetName: configAssetName,
             loadType: loadType,
             duration: duration,
-            userData:v_pInfo.userData 
-        });
+            userData:v_pInfo.userData
+        } as LoadConfigSuccessEventArgs);
     }
 
     private onLoadConfigFailure(configAssetName: string, loadType: atsframework.LoadType, errorMessage: string, userData: atsframework.UserData): void {
         const v_pInfo: LoadConfigInfo = userData as LoadConfigInfo;
 
-        this.m_pEventComponent.emit("onLoadConfigFailure", {
+        let eventArgs: any = {
             configName: v_pInfo.configName,
             configAssetName: configAssetName,
             loadType: loadType,
             errorMessage: errorMessage,
             userData: v_pInfo.userData
-        });
+        } as LoadConfigFailureEventArgs;
+
+        if (this.m_pEventComponent.check("loadConfigFailure")) {
+            this.m_pEventComponent.emit("loadConfigFailure", eventArgs);
+        } else {
+            throw eventArgs;
+        }
     }
 
     private onLoadConfigUpdate(configAssetName: string, loadType: atsframework.LoadType, progress: number, userData: atsframework.UserData): void {
         const v_pInfo: LoadConfigInfo = userData as LoadConfigInfo;
 
-        this.m_pEventComponent.emit("onLoadConfigUpdate", {
+        this.m_pEventComponent.emit("loadConfigUpdate", {
             configName: v_pInfo.configName,
             configAssetName: configAssetName,
             loadType: loadType,
             progress: progress,
             userData: v_pInfo.userData
-        });
+        } as LoadConfigUpdateEventArgs);
     }
 
     private onLoadConfigDependencyAsset(configAssetName: string, dependencyAssetName: string, loadedCount: number, totalCount: number, userData: atsframework.UserData): void {
         const v_pInfo: LoadConfigInfo = userData as LoadConfigInfo;
 
-        this.m_pEventComponent.emit("onLoadConfigDependencyAsset", {
+        this.m_pEventComponent.emit("loadConfigDependencyAsset", {
             configName: v_pInfo.configName,
             configAssetName: configAssetName,
             dependencyAssetName: dependencyAssetName,
             loadedCount: loadedCount,
             totalCount: totalCount,
             userData: v_pInfo.userData
-        });
+        } as LoadConfigDependecyAssetEventArgs);
     }
 
 } // class ConfigComponent

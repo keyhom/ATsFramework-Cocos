@@ -116,10 +116,10 @@ export default class UIComponent extends FrameworkComponent {
             return;
         }
 
-        this.m_rUIManager.openUIFormSuccess.add(this.onOpenUIFormSuccess.bind(this));
-        this.m_rUIManager.openUIFormFailure.add(this.onOpenUIFormFailure.bind(this));
-        this.m_rUIManager.openUIFormUpdate.add(this.onOpenUIFormUpdate.bind(this));
-        this.m_rUIManager.closeUIFormComplete.add(this.onCloseUIFormComplete.bind(this));
+        this.m_rUIManager.openUIFormSuccess.add(this.onOpenUIFormSuccess, this);
+        this.m_rUIManager.openUIFormFailure.add(this.onOpenUIFormFailure, this);
+        this.m_rUIManager.openUIFormUpdate.add(this.onOpenUIFormUpdate, this);
+        this.m_rUIManager.closeUIFormComplete.add(this.onCloseUIFormComplete, this);
 
         this.m_rUIManager.resourceManager = FrameworkModule.getOrAddModule(atsframework.ResourceManager);
     }

@@ -28,13 +28,17 @@ export default class ResourceComponent extends FrameworkComponent {
         // NOOP.
     }
 
-} // class ResourceComponent 
+    unloadAsset(asset: object): void {
+        this.m_pResourceManager.unloadAsset(asset);
+    }
+
+} // class ResourceComponent
 
 class CocosResourceLoader implements atsframework.IResourceLoader {
 
     hasAsset(assetName: string): boolean {
         return cc.loader.getRes(assetName);
-    }   
+    }
 
     loadAsset(assetName: string, loadAssetCallbacks: atsframework.LoadAssetCallbacks): void;
     loadAsset(assetName: string, loadAssetCallbacks: atsframework.LoadAssetCallbacks, userData: atsframework.UserData): void;

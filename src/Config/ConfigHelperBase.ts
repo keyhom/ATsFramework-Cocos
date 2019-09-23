@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 export default abstract class ConfigHelperBase extends cc.Component implements atsframework.IConfigHelper {
 

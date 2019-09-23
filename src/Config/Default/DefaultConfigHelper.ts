@@ -72,13 +72,46 @@ export default class DefaultConfigHelper extends ConfigHelperBase {
     parseConfig(text: string, userData: atsframework.UserData): boolean;
     parseConfig(buffer: ArrayBuffer, userData: atsframework.UserData): boolean;
     parseConfig(buffer: any, userData: any): boolean {
-        throw new Error("Method not implemented.");
-        // TODO: a simplify parsing line text.
+        if ('string' === typeof buffer) {
+            let v_sText:string = buffer;
+
+            if (v_sText.charCodeAt(0) == 65279)
+                v_sText = v_sText.slice(1);
+
+            v_sText = v_sText.replace('\r\n', '\n');
+
+            let v_pLines: string[] = v_sText.split('\n');
+
+            try {
+                for (let i: number = 0; i < v_pLines.length; i++) {
+                    if (v_pLines[i].length <= 0 || v_pLines[i][0] == '#')
+                        continue;
+
+                    let v_pSplitLine: string[] = v_pLines[i].split(',');
+                    if (v_pSplitLine.length != 4) {
+                        cc.warn(`Can not parse config '${v_sText}'`);
+                        return false;
+                    }
+
+                    let v_sConfigName: string = v_pSplitLine[1];
+                    let v_sConifgValue: string = v_pSplitLine[3];
+                    if (!this.addConfig(v_sConfigName, v_sConifgValue)) {
+                        cc.warn(`Can not add raw string with config name '${v_sConfigName}' which may be invalid or duplicated.`);
+                        return false;
+                    }
+                }
+                return true;
+            } catch (e) {
+                cc.warn(`Can not parse config '${v_sText}' with exception '${e}'`);
+                return false;
+            }
+        } else {
+            throw new Error("FIXME: Method (DefaultConfigHelper::parseConfig) not implemented.");
+        }
     }
 
-    releaseConfigAsset(configAssetName: object): void {
-        throw new Error("Method not implemented.");
-        // TODO: release asset via ResourceComponent.
+    releaseConfigAsset(configAsset: object): void {
+        this.m_pResourceComponent.unloadAsset(configAsset);
     }
 
 } // class DefaultConfigHelper

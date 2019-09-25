@@ -15,200 +15,207 @@ const FrameworkModule = atsframework.FrameworkModule;
 type FrameworkModule = atsframework.FrameworkModule;
 
 export type LoadSceneSuccessEventArgs = {
-	sceneAssetName: string,
-	duration: number,
-	userData: UserData
+    sceneAssetName: string,
+    duration: number,
+    userData: UserData
 };
 
 export type LoadSceneFailureEventArgs = {
-	sceneAssetName: string,
-	errorMessage: string,
-	userData: UserData
+    sceneAssetName: string,
+    errorMessage: string,
+    userData: UserData
 };
 
 export type LoadSceneUpdateEventArgs = {
-	sceneAssetName: string,
-	progress: number,
-	userData: UserData
+    sceneAssetName: string,
+    progress: number,
+    userData: UserData
 };
 
 export type LoadSceneDependencyAssetEventArgs = {
-	sceneAssetName: string,
-	dependencyAssetName: string,
-	loadedCount: number,
-	totalCount: number,
-	userData: UserData
+    sceneAssetName: string,
+    dependencyAssetName: string,
+    loadedCount: number,
+    totalCount: number,
+    userData: UserData
 };
 
 export type UnloadSceneSuccessEventArgs = {
-	sceneAssetName: string,
-	userData: UserData
+    sceneAssetName: string,
+    userData: UserData
 };
 
 export type UnloadSceneFailureEventArgs = {
-	sceneAssetName: string,
-	userData: UserData
+    sceneAssetName: string,
+    userData: UserData
 };
+
+export const LoadSceneSuccessEventId: string = "loadSceneSuccess";
+export const LoadSceneFailureEventId: string = "loadSceneFailure";
+export const LoadSceneUPdateEventId: string = "loadSceneUpdate";
+export const LoadSceneDependencyAssetEventId: string = "loadSceneDependencyAsset";
+export const UnloadSceneSuccessEventId: string = "unloadSceneSuccess";
+export const UnloadSceneFailureEventId: string = "unloadSceneFailure";
 
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/Scene')
 export default class SceneComponent extends FrameworkComponent {
 
-	private m_pEventComponent!: EventComponent;
-	private m_pSceneManager!: SceneManager;
+    private m_pEventComponent!: EventComponent;
+    private m_pSceneManager!: SceneManager;
 
-	@property({ displayName: "Enable Update Event" })
-	private m_bEnableLoadSceneUpdateEvent: boolean = false;
-	@property({ displayName: "Enable Dependency Asset Event" })
-	private m_bEnableLoadSceneDependencyAssetEvent: boolean = false;
+    @property({ displayName: "Enable Update Event" })
+    private m_bEnableLoadSceneUpdateEvent: boolean = false;
+    @property({ displayName: "Enable Dependency Asset Event" })
+    private m_bEnableLoadSceneDependencyAssetEvent: boolean = false;
 
-	private m_pMainCamera!: cc.Camera;
-	get mainCamera(): cc.Camera { return this.m_pMainCamera; }
+    private m_pMainCamera!: cc.Camera;
+    get mainCamera(): cc.Camera { return this.m_pMainCamera; }
 
-	onLoad(): void {
-		super.onLoad();
+    onLoad(): void {
+        super.onLoad();
 
-		this.m_pSceneManager = FrameworkModule.getOrAddModule(SceneManager);
-		if (null == this.m_pSceneManager) {
-			throw new Error("Scene manager is invalid.");
-		}
+        this.m_pSceneManager = FrameworkModule.getOrAddModule(SceneManager);
+        if (null == this.m_pSceneManager) {
+            throw new Error("Scene manager is invalid.");
+        }
 
-		this.m_pSceneManager.resourceManager = FrameworkModule.getModule(ResourceManager);
+        this.m_pSceneManager.resourceManager = FrameworkModule.getModule(ResourceManager);
 
-		this.m_pSceneManager.loadSceneSuccess.add(this.onLoadSceneSuccess, this);
-		this.m_pSceneManager.loadSceneFailure.add(this.onLoadSceneFailure, this);
+        this.m_pSceneManager.loadSceneSuccess.add(this.onLoadSceneSuccess, this);
+        this.m_pSceneManager.loadSceneFailure.add(this.onLoadSceneFailure, this);
 
-		if (this.m_bEnableLoadSceneUpdateEvent) {
-			this.m_pSceneManager.loadSceneUpdate.add(this.onLoadSceneUpdate, this);
-		}
+        if (this.m_bEnableLoadSceneUpdateEvent) {
+            this.m_pSceneManager.loadSceneUpdate.add(this.onLoadSceneUpdate, this);
+        }
 
-		if (this.m_bEnableLoadSceneDependencyAssetEvent) {
-			this.m_pSceneManager.loadSceneDependencyAsset.add(this.onLoadSceneDependencyAsset, this);
-		}
+        if (this.m_bEnableLoadSceneDependencyAssetEvent) {
+            this.m_pSceneManager.loadSceneDependencyAsset.add(this.onLoadSceneDependencyAsset, this);
+        }
 
-		this.m_pSceneManager.unloadSceneSuccess.add(this.onUnloadSceneSuccess, this);
-		this.m_pSceneManager.unloadSceneFailure.add(this.onUnloadSceneFailure, this);
-	}
+        this.m_pSceneManager.unloadSceneSuccess.add(this.onUnloadSceneSuccess, this);
+        this.m_pSceneManager.unloadSceneFailure.add(this.onUnloadSceneFailure, this);
+    }
 
-	start(): void {
-		this.m_pEventComponent = FrameworkComponent.getComponent(EventComponent);
-		if (null == this.m_pEventComponent) {
-			throw new Error("Event component is invalid.");
-		}
-	}
+    start(): void {
+        this.m_pEventComponent = FrameworkComponent.getComponent(EventComponent);
+        if (null == this.m_pEventComponent) {
+            throw new Error("Event component is invalid.");
+        }
+    }
 
-	sceneIsLoaded(sceneAssetName: string): boolean {
-		return this.m_pSceneManager.sceneIsLoaded(sceneAssetName);
-	}
+    sceneIsLoaded(sceneAssetName: string): boolean {
+        return this.m_pSceneManager.sceneIsLoaded(sceneAssetName);
+    }
 
-	getLoadedSceneAssetNames(results?: string[]): string[] {
-		return this.m_pSceneManager.getLoadedSceneAssetNames(results);
-	}
+    getLoadedSceneAssetNames(results?: string[]): string[] {
+        return this.m_pSceneManager.getLoadedSceneAssetNames(results);
+    }
 
-	sceneIsLoading(sceneAssetName: string): boolean {
-		return this.m_pSceneManager.sceneIsLoading(sceneAssetName);
-	}
+    sceneIsLoading(sceneAssetName: string): boolean {
+        return this.m_pSceneManager.sceneIsLoading(sceneAssetName);
+    }
 
-	getLoadingSceneAssetNames(results?: string[]): string[] {
-		return this.m_pSceneManager.getLoadingSceneAssetNames(results);
-	}
+    getLoadingSceneAssetNames(results?: string[]): string[] {
+        return this.m_pSceneManager.getLoadingSceneAssetNames(results);
+    }
 
-	sceneIsUnloading(sceneAssetName: string): boolean {
-		return this.m_pSceneManager.sceneIsUnloading(sceneAssetName);
-	}
+    sceneIsUnloading(sceneAssetName: string): boolean {
+        return this.m_pSceneManager.sceneIsUnloading(sceneAssetName);
+    }
 
-	getUnloadingSceneAssetNames(results?: string[]): string[] {
-		return this.m_pSceneManager.getUnloadingSceneAssetNames(results);
-	}
+    getUnloadingSceneAssetNames(results?: string[]): string[] {
+        return this.m_pSceneManager.getUnloadingSceneAssetNames(results);
+    }
 
-	loadScene(sceneAssetName: string): void;
-	loadScene(sceneAssetName: string, priority: number): void;
-	loadScene(sceneAssetName: string, userData: atsframework.UserData): void;
-	loadScene(sceneAssetName: string, priority: number, userData: atsframework.UserData): void;
-	loadScene(sceneAssetName: string, anyArg1?: any, anyArg2?: any): void {
-		return this.m_pSceneManager.loadScene(sceneAssetName, anyArg1, anyArg2);
-	}
+    loadScene(sceneAssetName: string): void;
+    loadScene(sceneAssetName: string, priority: number): void;
+    loadScene(sceneAssetName: string, userData: atsframework.UserData): void;
+    loadScene(sceneAssetName: string, priority: number, userData: atsframework.UserData): void;
+    loadScene(sceneAssetName: string, anyArg1?: any, anyArg2?: any): void {
+        return this.m_pSceneManager.loadScene(sceneAssetName, anyArg1, anyArg2);
+    }
 
-	unloadScene(sceneAssetName: string): void;
-	unloadScene(sceneAssetName: string, userData: atsframework.UserData): void;
-	unloadScene(sceneAssetName: string, userData?: atsframework.UserData): void {
-		this.m_pSceneManager.unloadScene(sceneAssetName, userData);
-	}
+    unloadScene(sceneAssetName: string): void;
+    unloadScene(sceneAssetName: string, userData: atsframework.UserData): void;
+    unloadScene(sceneAssetName: string, userData?: atsframework.UserData): void {
+        this.m_pSceneManager.unloadScene(sceneAssetName, userData);
+    }
 
-	static getSceneName(sceneAssetName: string): string {
-		if (!sceneAssetName) {
-			cc.error("Scene asset name is invalid.");
-			return null;
-		}
+    static getSceneName(sceneAssetName: string): string {
+        if (!sceneAssetName) {
+            cc.error("Scene asset name is invalid.");
+            return null;
+        }
 
-		let v_idx: number = sceneAssetName.lastIndexOf('/');
-		if (v_idx + 1 >= sceneAssetName.length) {
-			cc.error(`Scene asset name '${sceneAssetName}' is invalid.`);
-			return null;
-		}
+        let v_idx: number = sceneAssetName.lastIndexOf('/');
+        if (v_idx + 1 >= sceneAssetName.length) {
+            cc.error(`Scene asset name '${sceneAssetName}' is invalid.`);
+            return null;
+        }
 
-		let v_sSceneName: string = sceneAssetName.substring(v_idx + 1);
-		v_idx = v_sSceneName.lastIndexOf('.scene');
-		if (v_idx > 0) {
-			v_sSceneName = v_sSceneName.substring(0, v_idx);
-		}
+        let v_sSceneName: string = sceneAssetName.substring(v_idx + 1);
+        v_idx = v_sSceneName.lastIndexOf('.scene');
+        if (v_idx > 0) {
+            v_sSceneName = v_sSceneName.substring(0, v_idx);
+        }
 
-		return v_sSceneName;
-	}
+        return v_sSceneName;
+    }
 
-	private onLoadSceneSuccess(sceneAssetName: string, duration: number, userData: atsframework.UserData): void {
-		cc.log(`Load scene '${sceneAssetName}' success.`);
+    private onLoadSceneSuccess(sceneAssetName: string, duration: number, userData: atsframework.UserData): void {
+        cc.log(`Load scene '${sceneAssetName}' success.`);
 
-		this.m_pMainCamera = cc.Camera.main;
+        this.m_pMainCamera = cc.Camera.main;
 
-		this.m_pEventComponent.emit('loadSceneSuccess', {
-			sceneAssetName: sceneAssetName,
-			duration: duration,
-			userData: userData
-		} as LoadSceneSuccessEventArgs);
-	}
+        this.m_pEventComponent.emit(LoadSceneSuccessEventId, {
+            sceneAssetName: sceneAssetName,
+            duration: duration,
+            userData: userData
+        } as LoadSceneSuccessEventArgs);
+    }
 
-	private onLoadSceneFailure(sceneAssetName: string, errorMessage: string, userData: atsframework.UserData): void {
-		cc.error(`Load scene '${sceneAssetName}' failure.`);
+    private onLoadSceneFailure(sceneAssetName: string, errorMessage: string, userData: atsframework.UserData): void {
+        cc.error(`Load scene '${sceneAssetName}' failure.`);
 
-		this.m_pEventComponent.emit('loadSceneFailure', {
-			sceneAssetName: sceneAssetName,
-			errorMessage: errorMessage,
-			userData: userData
-		} as LoadSceneFailureEventArgs);
-	}
+        this.m_pEventComponent.emit(LoadSceneFailureEventId, {
+            sceneAssetName: sceneAssetName,
+            errorMessage: errorMessage,
+            userData: userData
+        } as LoadSceneFailureEventArgs);
+    }
 
-	private onLoadSceneUpdate(sceneAssetName: string, progress: number, userData: atsframework.UserData): void {
-		this.m_pEventComponent.emit('loadSceneUpdate', {
-			sceneAssetName: sceneAssetName,
-			progress: progress,
-			userData: userData
-		} as LoadSceneUpdateEventArgs);
-	}
+    private onLoadSceneUpdate(sceneAssetName: string, progress: number, userData: atsframework.UserData): void {
+        this.m_pEventComponent.emit(LoadSceneUPdateEventId, {
+            sceneAssetName: sceneAssetName,
+            progress: progress,
+            userData: userData
+        } as LoadSceneUpdateEventArgs);
+    }
 
-	private onLoadSceneDependencyAsset(sceneAssetName: string, dependencyAssetName: string, loadedCount: number, totalCount: number, userData: atsframework.UserData): void {
-		this.m_pEventComponent.emit('loadSceneDependencyAsset', {
-			sceneAssetName: sceneAssetName,
-			dependencyAssetName: dependencyAssetName,
-			loadedCount: loadedCount,
-			totalCount: totalCount,
-			userData: userData
-		} as LoadSceneDependencyAssetEventArgs);
-	}
+    private onLoadSceneDependencyAsset(sceneAssetName: string, dependencyAssetName: string, loadedCount: number, totalCount: number, userData: atsframework.UserData): void {
+        this.m_pEventComponent.emit(LoadSceneDependencyAssetEventId, {
+            sceneAssetName: sceneAssetName,
+            dependencyAssetName: dependencyAssetName,
+            loadedCount: loadedCount,
+            totalCount: totalCount,
+            userData: userData
+        } as LoadSceneDependencyAssetEventArgs);
+    }
 
-	private onUnloadSceneSuccess(sceneAssetName: string, userData: atsframework.UserData): void {
-		this.m_pEventComponent.emit('unloadSceneSuccess', {
-			sceneAssetName: sceneAssetName,
-			userData: userData
-		} as UnloadSceneSuccessEventArgs);
-	}
+    private onUnloadSceneSuccess(sceneAssetName: string, userData: atsframework.UserData): void {
+        this.m_pEventComponent.emit(UnloadSceneSuccessEventId, {
+            sceneAssetName: sceneAssetName,
+            userData: userData
+        } as UnloadSceneSuccessEventArgs);
+    }
 
-	private onUnloadSceneFailure(sceneAssetName: string, userData: atsframework.UserData): void {
-		this.m_pEventComponent.emit('unloadSceneFailure', {
-			sceneAssetName: sceneAssetName,
-			userData: userData
-		} as UnloadSceneFailureEventArgs);
-	}
+    private onUnloadSceneFailure(sceneAssetName: string, userData: atsframework.UserData): void {
+        this.m_pEventComponent.emit(UnloadSceneFailureEventId, {
+            sceneAssetName: sceneAssetName,
+            userData: userData
+        } as UnloadSceneFailureEventArgs);
+    }
 
 } // class SceneComponent

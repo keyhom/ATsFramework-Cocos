@@ -18,10 +18,21 @@ const UIManager = atsframework.UIManager;
 type FrameworkModule = atsframework.FrameworkModule;
 const FrameworkModule = atsframework.FrameworkModule;
 
-type OpenUIFormSuccessEventArgs = atsframework.OpenUIFormSuccessEventArgs;
-type OpenUIFormFailureEventArgs = atsframework.OpenUIFormFailureEventArgs;
-type OpenUIFormUpdateEventArgs = atsframework.OpenUIFormUpdateEventArgs;
-type CloseUIFormCompleteEventArgs = atsframework.CloseUIFormCompleteEventArgs;
+export type OpenUIFormSuccessEventArgs = {
+    uiForm: UIForm,
+    duration: number,
+    userData: UserData
+};
+
+export type OpenUIFormFailureEventArgs = atsframework.OpenUIFormFailureEventArgs;
+export type OpenUIFormUpdateEventArgs = atsframework.OpenUIFormUpdateEventArgs;
+export type OpenUIFormDependencyAssetEventArgs = atsframework.OpenUIFormDependencyAssetEventArgs;
+export type CloseUIFormCompleteEventArgs = atsframework.CloseUIFormCompleteEventArgs;
+
+export const OpenUIFormSuccessEventId: string = "openUIFormSuccess";
+export const OpenUIFormFailureEventId: string = "openUIFormFailure";
+export const OpenUIFormUpdateEventId: string = "openUIFormUpdate";
+export const CloseUIFormCompleteEventId: string = "closeUIFormComplete";
 
 @ccclass('UIGroupInfo')
 export class UIGroupInfo {
@@ -290,22 +301,24 @@ export default class UIComponent extends FrameworkComponent {
 
     private onOpenUIFormSuccess(eventArgs: OpenUIFormSuccessEventArgs): void {
         if (this.m_bEnableOpenUIFormSuccessEvent)
-            this.m_rEventRef.emit('openUIFormSuccess', eventArgs);
+            this.m_rEventRef.emit(OpenUIFormSuccessEventId, eventArgs);
     }
 
     private onOpenUIFormFailure(eventArgs: OpenUIFormFailureEventArgs): void {
+        cc.warn(`Open UI form failure, asset name '${eventArgs.uiFormAssetName}' , UI group name '${eventArgs.uiGroupName}' , pause covered UI form '${eventArgs.pauseCoveredUIForm}' , error message '${eventArgs.errorMessage}'`); 
+
         if (this.m_bEnableOpenUIFormFailureEvent)
-            this.m_rEventRef.emit('openUIFormFailure', eventArgs);
+            this.m_rEventRef.emit(OpenUIFormFailureEventId, eventArgs);
     }
 
     private onOpenUIFormUpdate(eventArgs: OpenUIFormUpdateEventArgs): void {
         if (this.m_bEnableOpenUIFormUpdateEvent)
-            this.m_rEventRef.emit('openUIFormUpdate', eventArgs);
+            this.m_rEventRef.emit(OpenUIFormUpdateEventId, eventArgs);
     }
 
     private onCloseUIFormComplete(eventArgs: CloseUIFormCompleteEventArgs): void {
         if (this.m_bEnableCloseUIFormCompleteEvent)
-            this.m_rEventRef.emit('closeUIFormComplete', eventArgs);
+            this.m_rEventRef.emit(CloseUIFormCompleteEventId, eventArgs);
     }
 
 } // class UIComponent

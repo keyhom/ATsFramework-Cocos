@@ -359,7 +359,7 @@ declare namespace atsframework {
     } // class ResourceManager
 
     export type LoadSceneSuccessEventHandler = LoadSceneSuccessCallback;
-    export type LoadSceneFailureEventHandler = (sceneAssetName: string, errorMessage: string, userData: UserData);
+    export type LoadSceneFailureEventHandler = (sceneAssetName: string, errorMessage: string, userData: UserData) => void;
     export type LoadSceneUpdateEventHandler = LoadSceneUpdateCallback;
     export type LoadSceneDependencyAssetEventHandler = LoadSceneAssetDependencyCallback;
     export type UnloadSceneSuccessEventHandler = UnloadSceneSuccessCallback;

@@ -47,6 +47,11 @@ export type LoadConfigDependecyAssetEventArgs = {
     userData: atsframework.UserData
 } // type LoadConfigDependecyAssetEventArgs
 
+export const LoadConfigSuccessEventId: string = "loadConfigSuccess";
+export const LoadConfigFailureEventId: string = "loadConfigFailure";
+export const LoadConfigUpdateEventId: string = "loadConfigUpdate";
+export const LoadConfigDependecyAssetEventId: string = "loadConfigDependencyAsset";
+
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/Config')
@@ -175,7 +180,7 @@ export default class ConfigComponent extends FrameworkComponent {
     private onLoadConfigSuccess(configAssetName: string, loadType: atsframework.LoadType, duration: number, userData: atsframework.UserData): void {
         const v_pInfo: LoadConfigInfo = userData as LoadConfigInfo;
 
-        this.m_pEventComponent.emit("loadConfigSuccess", /*LoadConfigSuccessEventArgs*/ {
+        this.m_pEventComponent.emit(LoadConfigSuccessEventId, {
             configName: v_pInfo.configName,
             configAssetName: configAssetName,
             loadType: loadType,
@@ -195,8 +200,8 @@ export default class ConfigComponent extends FrameworkComponent {
             userData: v_pInfo.userData
         } as LoadConfigFailureEventArgs;
 
-        if (this.m_pEventComponent.check("loadConfigFailure")) {
-            this.m_pEventComponent.emit("loadConfigFailure", eventArgs);
+        if (this.m_pEventComponent.check(LoadConfigFailureEventId)) {
+            this.m_pEventComponent.emit(LoadConfigFailureEventId, eventArgs);
         } else {
             throw eventArgs;
         }
@@ -205,7 +210,7 @@ export default class ConfigComponent extends FrameworkComponent {
     private onLoadConfigUpdate(configAssetName: string, loadType: atsframework.LoadType, progress: number, userData: atsframework.UserData): void {
         const v_pInfo: LoadConfigInfo = userData as LoadConfigInfo;
 
-        this.m_pEventComponent.emit("loadConfigUpdate", {
+        this.m_pEventComponent.emit(LoadConfigUpdateEventId, {
             configName: v_pInfo.configName,
             configAssetName: configAssetName,
             loadType: loadType,
@@ -217,7 +222,7 @@ export default class ConfigComponent extends FrameworkComponent {
     private onLoadConfigDependencyAsset(configAssetName: string, dependencyAssetName: string, loadedCount: number, totalCount: number, userData: atsframework.UserData): void {
         const v_pInfo: LoadConfigInfo = userData as LoadConfigInfo;
 
-        this.m_pEventComponent.emit("loadConfigDependencyAsset", {
+        this.m_pEventComponent.emit(LoadConfigDependecyAssetEventId, {
             configName: v_pInfo.configName,
             configAssetName: configAssetName,
             dependencyAssetName: dependencyAssetName,

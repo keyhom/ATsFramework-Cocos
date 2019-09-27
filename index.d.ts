@@ -401,6 +401,240 @@ declare namespace atsframework {
         protected shutdown(): void;
     } // class SceneManager
 
+    export namespace Constant {
+        export const DefaultTime: number;
+        export const DefaultMute: boolean;
+        export const DefaultLoop: boolean;
+        export const DefaultPriority: number;
+        export const DefaultVolume: number;
+        export const DefaultFadeInSeconds: number;
+        export const DefaultFadeOutSeconds: number;
+        export const DefaultPitch: number;
+        export const DefaultPanStereo: number;
+        export const DefaultSpatialBlend: number;
+        export const DefaultMaxDistance: number;
+        export const DefaultDopplerLevel: number;
+    } // namespace Constant
+
+    export interface ISoundGroup {
+        // TODO: interface ISoundGroup
+    } // interface ISoundGroup
+
+    export interface ISoundGroupHelper {
+        // TODO: interface ISoundGroupHelper
+    } // interface ISoundGroupHelper
+
+    export interface ISoundHelper {
+        releaseSoundAsset(soundAsset: object): void;
+    } // interface ISoundHelper
+
+    export type ResetSoundAgentEventHandler = () => void;
+
+    export interface ISoundAgent {
+        readonly soundGroup: ISoundGroup;
+        readonly serialId: number;
+        readonly isPlaying: boolean;
+        readonly length: number;
+        time: number;
+        readonly mute: boolean;
+        muteInSoundGroup: boolean;
+        loop: boolean;
+        priority: number;
+        readonly volume: number;
+        volumeInSoundGroup: number;
+        pitch: number;
+        panStereo: number;
+        spatialBlend: number;
+        maxDistance: number;
+        dopplerLevel: number;
+        readonly helper: ISoundAgentHelper;
+
+        play(): void;
+        play(fadeInSeconds: number): void;
+
+        stop(): void;
+        stop(fadeOutSeconds: number): void;
+
+        pause(): void;
+        pause(fadeOutSeconds: number): void;
+
+        resume(): void;
+        resume(fadeInSeconds: number): void;
+
+        reset(): void;
+    } // interface ISoundAgent
+
+    export interface ISoundAgentHelper {
+        isPlaying: boolean;
+        length: number;
+        time: number;
+        mute: boolean;
+        loop: boolean;
+        priority: number;
+        volume: number;
+        pitch: number;
+        panStereo: number;
+        spatialBlend: number;
+        maxDistance: number;
+        dopplerLevel: number;
+        resetSoundAgent: EventHandler<ResetSoundAgentEventHandler>;
+        play(fadeInSeconds: number): void;
+        stop(fadeOutSeconds: number): void;
+        pause(fadeOutSeconds: number): void;
+        resume(fadeInSeconds: number): void;
+        reset(): void;
+        setSoundAsset(soundAsset: object): boolean;
+    } // interface ISoundAgentHelper
+
+    export class SoundAgent {
+        readonly soundGroup: SoundGroup;
+        serialId: number;
+        readonly isPlaying: boolean;
+        readonly length: number;
+        time: number;
+        readonly mute: boolean;
+        muteInSoundGroup: boolean;
+        loop: boolean;
+        priority: number;
+        readonly volume: number;
+        volumeInSoundGroup: number;
+        pitch: number;
+        panStereo: number;
+        spatialBlend: number;
+        maxDistance: number;
+        dopplerLevel: number;
+        readonly helper: ISoundAgentHelper;
+        readonly setSoundAssetTime: number;
+
+        play(): void;
+        play(fadeInSeconds: number): void;
+
+        stop(): void;
+        stop(fadeOutSeconds: number): void;
+
+        pause(): void;
+        pause(fadeOutSeconds: number): void;
+
+        resume(): void;
+        resume(fadeInSeconds: number): void;
+
+        reset(): void;
+
+        // setSoundAsset(soundAsset: object): void;
+        // refreshMute(): void;
+        // refreshVolume(): void;
+    } // class SoundAgent
+
+    export enum PlaySoundErrorCode {
+        Unknown = 0,
+        SoundGroupNotExist,
+        SoundGroupHasNoAgent,
+        LoadAssetFailure,
+        IgnoreDueToLowPriority,
+        SetSoundAssetFailure
+    } // enum PlaySoundErrorCode
+
+    export type PlaySoundErrorCodeOut = {
+        code: PlaySoundErrorCode
+    } // type PlaySoundErrorCodeOut
+
+    export type PlaySoundParams = {
+        time: number,
+        muteInSoundGroup: boolean,
+        loop: boolean,
+        priority: number,
+        volumeInSoundGroup: number,
+        fadeInSeconds: number,
+        pitch: number,
+        panStereo: number,
+        spatialBlend: number,
+        maxDistance: number,
+        dopplerLevel: number,
+        referenced: boolean,
+    } // type PlaySoundParams
+
+    export class SoundGroup {
+
+        readonly name: string;
+        readonly soundAgentCount: number;
+        avoidBeingReplacedBySamePriority: boolean;
+        mute: boolean;
+        volume: number;
+        readonly helper: ISoundGroupHelper;
+
+        addSoundAgentHelper(soundHelper: ISoundHelper, soundGroupHelper: ISoundGroupHelper): void;
+
+        playSound(serialId: number, soundAsset: object, playSoundParams: PlaySoundParams, errorCode?: PlaySoundErrorCodeOut): ISoundAgent | null;
+
+        stopSound(serialId: number, fadeOutSeconds: number): boolean;
+
+        pauseSound(serialId: number, fadeOutSeconds: number): boolean;
+
+        resumeSound(serialId: number, fadeInSeconds: number): boolean;
+
+        stopAllLoadedSounds(): void;
+        stopAllLoadedSounds(fadeOutSeconds: number): void;
+
+    } // class SoundGroup
+
+    export type PlaySoundSuccessEventHandler = (serialId: number, soundAssetName: string, soundAgent: ISoundAgent, duration: number, userData: UserData) => void;
+    export type PlaySoundFailureEventHandler = (serialId: number, soundAssetName: string, soundGroupName: string, playSoundParams: PlaySoundParams, errorCode: PlaySoundErrorCode, errorMessage: string, userData: UserData) => void;
+    export type PlaySoundUpdateEventHandler = (serialId: number, soundAssetName: string, soundGroupName: string, playSoundParams: PlaySoundParams, progress: number, userData: UserData) => void;
+    export type PlaySoundDependencyAssetEventHandler = (serialId: number, soundAssetName: string, soundGroupName: string, playSoundParams: PlaySoundParams, dependencyAssetName: string, loadedCount: number, totalCount: number, userData: UserData) => void;
+
+    export class SoundManager extends FrameworkModule {
+        readonly soundGroupCount: number;
+        readonly playSoundSuccess: EventHandler<PlaySoundSuccessEventHandler>;
+        readonly playSoundFailure: EventHandler<PlaySoundFailureEventHandler>;
+        readonly playSoundUpdate: EventHandler<PlaySoundUpdateEventHandler>;
+        readonly playSoundDependencyAsset: EventHandler<PlaySoundDependencyAssetEventHandler>;
+
+        protected update(elapsed: number, realElapsed: number): void;
+        protected shutdown(): void;
+
+        resourceManager: IResourceManager;
+        soundHelper: ISoundHelper;
+
+        hasSoundGroup(soundGroupName: string): boolean;
+        getSoundGroup(soundGroupName: string): SoundGroup | null;
+        getAllSoundGroups(): SoundGroup[];
+        getAllSoundGroups(results: SoundGroup[]): SoundGroup[];
+
+        addSoundGroup(soundGroupName: string, soundGroupHelper: ISoundGroupHelper): boolean;
+        addSoundGroup(soundGroupName: string, soundGroupAvoidBeingReplacedBySamePriority: boolean, soundGroupMute: boolean, soundGroupVolume: number, soundGroupHelper: ISoundGroupHelper): boolean;
+
+        addSoundAgentHelper(soundGroupName: string, soundAgentHelper: ISoundAgentHelper): void;
+
+        getAllLoadingSoundSerialIds(): number[];
+        getAllLoadingSoundSerialIds(results: number[]): number[];
+
+        isLoadingSound(serialId: number): boolean;
+
+        playSound(soundAssetName: string, soundGroupName: string): number;
+        playSound(soundAssetName: string, soundGroupName: string, priority: number): number;
+        playSound(soundAssetName: string, soundGroupName: string, playSoundParams: PlaySoundParams): number;
+        playSound(soundAssetName: string, soundGroupName: string, userData: UserData): number;
+        playSound(soundAssetName: string, soundGroupName: string, priority: number, playSoundParams: PlaySoundParams): number;
+        playSound(soundAssetName: string, soundGroupName: string, priority: number, userData: UserData): number;
+        playSound(soundAssetName: string, soundGroupName: string, playSoundParams: PlaySoundParams, userData: UserData): number;
+        playSound(soundAssetName: string, soundGroupName: string, priority: number, playSoundParams: PlaySoundParams, userData: UserData): number;
+
+        stopSound(serialId: number): boolean;
+        stopSound(serialId: number, fadeOutSeconds: number): boolean;
+
+        stopAllLoadedSounds(): void;
+        stopAllLoadedSounds(fadeOutSeconds: number): void;
+
+        stopAllLoadingSounds(): void;
+
+        pauseSound(serialId: number): void;
+        pauseSound(serialId: number, fadeOutSeconds: number): void;
+
+        resumeSound(serialId: number): void;
+        resumeSound(serialId: number, fadeInSeconds: number): void;
+
+    } // class SoundManager
+
     export interface IUIGroup {
         name: string;
         depth: number;

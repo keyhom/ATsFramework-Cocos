@@ -30,5 +30,6 @@ exports.build = gulp.series(
     resolveSources,
     gulp.parallel(
         copyAssets,
-    )
+    ),
+    clean
 );

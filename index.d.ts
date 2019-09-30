@@ -31,7 +31,17 @@ declare namespace atsframework {
         clear(): void;
         isValid: boolean;
         size: number;
-    }
+    } // class EventHandler
+
+    export class FrameworkSegment<T> {
+
+        constructor(source: T, offset: number, length: number);
+
+        source: T;
+        offset: number;
+        length: number;
+
+    } // class FrameworkSegment<T>
 
     export abstract class FrameworkModule {
         static getModule<T extends FrameworkModule>(type: new() => T): T | null;
@@ -102,6 +112,99 @@ declare namespace atsframework {
         protected shutdown(): void;
 
     } // class DataNodeManager
+
+    export type DataTableRawContentType = string | ArrayBuffer | Blob;
+    export type LoadDataTableInfo = {
+        loadType: LoadType,
+        userData: UserData
+    } // type LoadDataTableInfo
+
+    export interface IDataTableHelper {
+
+        loadDataTable(dataTableAsset: object, loadType: LoadType, userData: UserData): boolean;
+        releaseDataTableAsset(dataTableAsset: object): void;
+
+        getDataRowSegments(content: DataTableRawContentType): IterableIterator<FrameworkSegment<DataTableRawContentType>>;
+
+    } // interface IDataTableHelper
+
+    export interface IDataRow {
+        id: number;
+        parseDataRow(dataRowSegment: FrameworkSegment<DataTableRawContentType>): boolean;
+    } // interface IDataRow
+
+    export interface IDataTable<T> {
+
+        name: string;
+        count: number;
+        minIdDataRow: T;
+        maxIdDataRow: T;
+
+        hasDataRow(id: number): boolean;
+        hasDataRow(pred: (value: T, idx?: number, container?: T[]) => boolean): boolean;
+
+        getDataRow(id: number): T | null;
+        getDataRow(pred: (value: T, idx?: number, container?: T[]) => boolean): T | null;
+
+        getDataRows(pred: (value: T, idx?: number, container?: T[]) => boolean): T[];
+        getDataRows(pred: (value: T, idx?: number, container?: T[]) => boolean, results: T[]): T[];
+
+        getAllDataRows(): T[];
+        getAllDataRows(results: T[]): T[];
+
+        shutdown(): void;
+
+    } // interface IDataTable<T>
+
+    export abstract class DataTableBase {
+        constructor(name?: string);
+
+        name: string;
+        abstract count: number;
+        abstract addDataRow(rowSegment: FrameworkSegment<DataTableRawContentType>): boolean;
+        abstract shutdown(): void;
+
+    } // class DataTableBase
+
+    export type LoadDataTableSuccessEventHandler = (dataTableAssetName: string, loadType: LoadType, duration: number, userData: UserData) => void;
+    export type LoadDataTableFailureEventHandler = (dataTableAssetName: string, loadType: LoadType, errorMessage: string, userData: UserData) => void;
+    export type LoadDataTableUpdateEventHandler = (dataTableAssetName: string, loadType: LoadType, progress: number, userData: UserData) => void;
+    export type LoadDataTableDependencyAssetEventHandler = (dataTableAssetName: string, dependencyAssetName: string, loadedCount: number, totalCount: number, userData: UserData) => void;
+
+    export class DataTableManager extends FrameworkModule {
+
+        resourceManager: IResourceManager;
+        readonly loadDataTableSuccess: EventHandler<LoadDataTableSuccessEventHandler>;
+        readonly loadDataTableFailure: EventHandler<LoadDataTableFailureEventHandler>;
+        readonly LoadDataTableUpdate: EventHandler<LoadDataTableUpdateEventHandler>;
+        readonly loadDataTableDependencyAsset: EventHandler<LoadDataTableDependencyAssetEventHandler>;
+
+        readonly count: number;
+        dataTableHelper: IDataTableHelper;
+
+        loadDataTable(dataTableAssetName: string, loadType: LoadType): void;
+        loadDataTable(dataTableAssetName: string, loadType: LoadType, priority: number): void;
+        loadDataTable(dataTableAssetName: string, loadType: LoadType, userData: UserData): void;
+        loadDataTable(dataTableAssetName: string, loadType: LoadType, priority: number, userData: UserData): void;
+
+        hasDataTable(dataTableAssetName: string): boolean;
+
+        getDataTable<T extends IDataRow>(): IDataTable<T> | null;
+        getDataTable<T extends IDataRow>(dataTableAssetName: string): IDataTable<T> | null;
+
+        getAllDataTables(): DataTableBase[];
+        getAllDataTables(results: DataTableBase[]): DataTableBase[];
+
+        createDataTable<T>(rowType: new () => T, content: DataTableRawContentType): IDataTable<T> & DataTableBase;
+        createDataTable<T>(rowType: new () => T, name: string, content: DataTableRawContentType): IDataTable<T> & DataTableBase;
+
+        destroyDataTable(): boolean;
+        destroyDataTable(name: string): boolean;
+
+        protected update(elapsed: number, realElapsed: number): void;
+        protected shutdown(): void;
+
+    } // class DataTableManager
 
     export type EventID = number | string;
 

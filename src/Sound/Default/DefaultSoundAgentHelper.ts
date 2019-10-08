@@ -10,7 +10,7 @@ export default class DefaultSoundAgentHelper extends SoundAgentHelperBase {
     private m_pResetSoundAgentEventHandler: atsframework.EventHandler<atsframework.ResetSoundAgentEventHandler> = new atsframework.EventHandler();
 
     get isPlaying(): boolean {
-        return this.m_pAudioSource.isPlaying;
+        return this.m_pAudioSource ? this.m_pAudioSource.isPlaying : false;
     }
 
     get length(): number {
@@ -137,9 +137,9 @@ export default class DefaultSoundAgentHelper extends SoundAgentHelperBase {
     }
 
     onLoad(): void {
-        super.onLoad();
+        // super.onLoad();
 
-        this.m_pAudioSource = this.getComponent(cc.AudioSource);
+        this.m_pAudioSource = this.getComponent(cc.AudioSource) || this.addComponent(cc.AudioSource);
         this.m_pAudioSource.playOnLoad = false;
     }
 

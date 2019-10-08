@@ -73,6 +73,22 @@ export type PlaySoundInfo = {
     userData: atsframework.UserData
 } // type PlaySoundInfo
 
+@ccclass("SoundGroupInfo")
+export class SoundGroupInfo {
+
+    @property(cc.String)
+    name: string = '';
+    @property(cc.Boolean)
+    avoidBeingReplacedBySamePriority: boolean = false;
+    @property(cc.Boolean)
+    mute: boolean = false;
+    @property(cc.Float)
+    volume: number = 1;
+    @property(cc.Integer)
+    soundAgentCount: number = 0;
+
+} // SoundGroupInfo
+
 const DefaultPriority: number = 0;
 
 @ccclass
@@ -83,26 +99,26 @@ export default class SoundComponent extends FrameworkComponent {
     private m_pSoundManager!: SoundManager;
     private m_pEventComponent!: EventComponent;
 
-    @property
+    @property({ displayName: "Enable PlaySound update event" })
     private m_bEnablePlaySoundUpdateEvent: boolean = false;
 
-    @property
+    @property({ displayName: "Enable PlaySound dependency asset event" })
     private m_bEnablePlaySoundDependencyAssetEvent: boolean = false;
 
-    @property(cc.Node)
+    @property({ displayName: "Instance Root", type: cc.Node })
     private m_pInstanceRoot: cc.Node = null;
 
-    @property
+    @property({ displayName: "Sound Helper" })
     private m_sSoundHelperTypeName: string = "DefaultSoundHelper";
 
-    @property
+    @property({ displayName: "Sound Group Helper" })
     private m_sSoundGroupHelperTypeName: string = "DefaultSoundGroupHelper";
 
-    @property
+    @property({ displayName: "Sound Agent Helper" })
     private m_sSoundAgentHelperTypeName: string = "DefaultSoundAgentHelper";
 
-    @property
-    private m_pSoundGroups: SoundGroup[] = null;
+    @property({ displayName: "Sound Group", type: [SoundGroupInfo] })
+    private m_pSoundGroupInfos: SoundGroupInfo[] = [];
 
     get soundGroupCount(): number {
         return this.m_pSoundManager.soundGroupCount;
@@ -159,15 +175,15 @@ export default class SoundComponent extends FrameworkComponent {
             this.m_pInstanceRoot.setScale(cc.Vec3.ONE);
         }
 
-        if (this.m_pSoundGroups) {
-            for (let i: number = 0; i < this.m_pSoundGroups.length; i++) {
+        if (this.m_pSoundGroupInfos) {
+            for (let i: number = 0; i < this.m_pSoundGroupInfos.length; i++) {
                 if (!this.addSoundGroup(
-                    this.m_pSoundGroups[i].name,
-                    this.m_pSoundGroups[i].avoidBeingReplacedBySamePriority,
-                    this.m_pSoundGroups[i].mute,
-                    this.m_pSoundGroups[i].volume,
-                    this.m_pSoundGroups[i].soundAgentCount)) {
-                    cc.warn(`Add sound group '${this.m_pSoundGroups[i].name}' failure.`);
+                    this.m_pSoundGroupInfos[i].name,
+                    this.m_pSoundGroupInfos[i].avoidBeingReplacedBySamePriority,
+                    this.m_pSoundGroupInfos[i].mute,
+                    this.m_pSoundGroupInfos[i].volume,
+                    this.m_pSoundGroupInfos[i].soundAgentCount)) {
+                    cc.warn(`Add sound group '${this.m_pSoundGroupInfos[i].name}' failure.`);
                     continue;
                 }
             }

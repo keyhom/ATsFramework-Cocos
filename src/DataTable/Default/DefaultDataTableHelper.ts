@@ -21,7 +21,7 @@ export default class DefaultDataTableHelper extends DataTableHelperBase {
             case atsframework.LoadType.Text:
             case atsframework.LoadType.Bytes:
             case atsframework.LoadType.Stream:
-                this.m_pDataTableComponent.createDataTable(rowType, dataTableNameInType, v_pTextAsset.text);
+                this.m_pDataTableComponent.createDataTable(rowType, dataTableName, v_pTextAsset.text);
                 break;
             default:
                 cc.warn('Unknown load type.');
@@ -50,8 +50,8 @@ export default class DefaultDataTableHelper extends DataTableHelperBase {
                 },
                 next(... args: any[]): any {
                     return {
-                        done: v_idx == v_pSegments.length - 1,
-                        value: v_pSegments[v_idx++]
+                        done: v_idx == v_pSegments.length,
+                        value: v_idx >= v_pSegments.length ? null : v_pSegments[v_idx++]
                     };
                 },
                 return(value?: atsframework.FrameworkSegment<atsframework.DataTableRawContentType>): any {

@@ -656,6 +656,8 @@ declare namespace atsframework {
         referenced: boolean,
     } // type PlaySoundParams
 
+    export let DefaultPlaySoundParams: PlaySoundParams;
+
     export class SoundGroup {
 
         readonly name: string;

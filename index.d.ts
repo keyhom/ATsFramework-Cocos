@@ -206,6 +206,159 @@ declare namespace atsframework {
 
     } // class DataTableManager
 
+    export interface IEntity {
+
+        readonly id: number;
+        readonly entityAssetName: string;
+        readonly handle: object;
+        readonly entityGroup: IEntityGroup;
+
+        onInit(entityId: number, entityAssetName: string, entityGroup: IEntityGroup, isNewInstance: boolean, userData: UserData): void;
+        onRecycle(): void;
+        onShow(userData: UserData): void;
+        onHide(userData: UserData): void;
+        onAttached(childEntity: IEntity, userData: UserData): void;
+        onDetached(childEntity: IEntity, userData: UserData): void;
+        onAttachTo(parentEntity: IEntity, userData: UserData): void;
+        onDetachFrom(parentEntity: IEntity, userData: UserData): void;
+        onUpdate(elpased: number, readElapsed: number): void;
+
+    } // interface IEntity
+
+    export interface IEntityHelper {
+
+        instantiateEntity(entityAsset: object): object;
+
+        createEntity(entityInstance: object, entityGroup: IEntityGroup, userData: UserData): IEntity;
+
+        releaseEntity(entityAsset: object, entityInstance: object | null): void;
+
+    } // interface IEntityHelper
+
+    export interface IEntityGroup {
+        readonly name: string;
+        readonly entityCount: number;
+        instanceAutoReleaseInterval: number;
+        instanceCapacity: number;
+        instancePriority: number;
+        helper: IEntityGroupHelper;
+
+        hasEntity(entityId: number): boolean;
+        hasEntity(entityAssetName: string): boolean;
+
+        getEntity(entityId: number): IEntity | null;
+        getEntity(entityAssetName: string): IEntity | null;
+
+        getEntities(entityAssetName: string): IEntity[];
+        getEntities(entityAssetName: string, results: IEntity[]): IEntity[];
+
+        getAllEntities(): IEntity[];
+        getAllEntities(results: IEntity[]): IEntity[];
+
+        setEntityInstanceLocked(entityInstance: object, locked: boolean): void;
+        setEntityInstancePriority(entityInstance: object, priority: number): void;
+
+    } // interface IEntityGroup
+
+    export interface IEntityGroupHelper { } // interface IEntityGroupHelper
+
+    export type ShowEntitySuccessEventHandler = (entity: IEntity, duration: number, userData: UserData) => void;
+    export type ShowEntityFailureEventHandler = (entityId: number, entityAssetName: string, entityGroupName: string, errorMessage: string, userData: UserData) => void;
+    export type ShowEntityUpdateEventHandler = (entityId: number, entityAssetName: string, entityGroupName: string, progress: number, userData: UserData) => void;
+    export type ShowEntityDependencyAssetEventHandler = (entityId: number, entityAssetName: string, entityGroupName: string, dependencyAssetName: string, loadedCount: number, totalCount: number, userData: UserData) => void;
+    export type HideEntityCompleteEventHandler = (entityId: number, entityAssetName: string, entityGroup: IEntityGroup, userData: UserData) => void;
+
+    export type ShowEntityInfo = {
+        serialId: number,
+        entityId: number,
+        entityGroup: EntityGroup,
+        userData: UserData,
+    } // type ShowEntityInfo
+
+    /**
+     * Entity management module.
+     */
+    export class EntityManager extends FrameworkModule {
+        readonly entityCount: number;
+        readonly entityGroupCount: number;
+
+        readonly showEntitySuccess: EventHandler<ShowEntitySuccessEventHandler>;
+        readonly showEntityFailure: EventHandler<ShowEntityFailureEventHandler>;
+        readonly showEntityUpdate: EventHandler<ShowEntityUpdateEventHandler>;
+        readonly showEntityDependencyAsset: EventHandler<ShowEntityDependencyAssetEventHandler>;
+        readonly hideEntityComplete: EventHandler<HideEntityCompleteEventHandler>;
+
+        resourceManager: IResourceManager;
+        entityHelper: IEntityHelper;
+
+        hasEntityGroup(entityGroupName: string): boolean;
+        getEntityGroup(entityGroupName: string): IEntityGroup | null;
+
+        getAllEntityGroup(): IEntityGroup[];
+        getAllEntityGroup(results: IEntityGroup[]): IEntityGroup[];
+
+        addEntityGroup(entityGroupName: string, instanceAutoReleaseInterval: number, instanceCapacity: number, instanceExpireTime: number, instancePriority: number, entityGroupHelper: IEntityGroupHelper): boolean;
+
+        hasEntity(entityId: number): boolean;
+        hasEntity(entityAssetName: string): boolean;
+
+        getEntity(entityId: number): IEntity | null;
+        getEntity(entityAssetName: string): IEntity | null;
+
+        getEntities(entityAssetName: string): IEntity[];
+        getEntities(entityAssetName, results: IEntity[]): IEntity[];
+
+        getAllLoadedEntities(): IEntity[];
+        getAllLoadedEntities(results: IEntity[]): IEntity[];
+
+        getAllLoadingEntityIds(): number[];
+        getAllLoadingEntityIds(results: number[]): number[];
+
+        isLoadingEntity(entityId: number): boolean;
+        isValidEntity(entity: IEntity): boolean;
+
+        showEntity(entityId: number, entityAssetName: string, entityGroupName: string): void;
+        showEntity(entityId: number, entityAssetName: string, entityGroupName: string, priority: number): void;
+        showEntity(entityId: number, entityAssetName: string, entityGroupName: string, userData: UserData): void;
+        showEntity(entityId: number, entityAssetName: string, entityGroupName: string, prioirty: number, userData: UserData): void;
+
+        hideEntity(entityId: number): void;
+        hideEntity(entityId: number, userData: UserData): void;
+        hideEntity(entity: IEntity): void;
+        hideEntity(entity: IEntity, userData: UserData): void;
+
+        hideAllLoadedEntities(): void;
+        hideAllLoadedEntities(userData: UserData): void;
+
+        hideAllLoadingEntities(): void;
+
+        getParentEntity(childEntity: IEntity): IEntity | null;
+        getParentEntity(childEntityId: number): IEntity | null;
+
+        getChildEntities(parentEntityId: number): IEntity[];
+        getChildEntities(parentEntityId: number, results: IEntity[]): IEntity[];
+
+        attachEntity(childEntityId: number, parentEntityId: number): void;
+        attachEntity(childEntityId: number, parentEntityId: number, userData: UserData): void;
+        attachEntity(childEntityId: number, parentEntity: IEntity): void;
+        attachEntity(childEntityId: number, parentEntity: IEntity, userData: UserData): void;
+        attachEntity(childEntity: IEntity, parentEntityId: number): void;
+        attachEntity(childEntity: IEntity, parentEntityId: number, userData: UserData): void;
+        attachEntity(childEntity: IEntity, parentEntity: IEntity): void;
+        attachEntity(childEntity: IEntity, parentEntity: IEntity, userData: UserData): void;
+
+        detachEntity(childEntityId: number): void;
+        detachEntity(childEntityId: number, userData: UserData): void;
+        detachEntity(childEntity: IEntity): void;
+        detachEntity(childEntity: IEntity, userData: UserData): void;
+
+        detachChildEntities(parentEntityId: number): void;
+        detachChildEntities(parentEntityId: number, userData: UserData): void;
+        detachChildEntities(parentEntity: IEntity): void;
+        detachChildEntities(parentEntity: IEntity, userData: UserData): void;
+
+    } // EntityManager
+
     export type EventID = number | string;
 
     export class EventManager extends FrameworkModule {

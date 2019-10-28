@@ -47,12 +47,12 @@ export default abstract class EntityLogic extends cc.Component {
 
     protected onShow(userData: UserData): void {
         this.m_bAvailable = true;
-        this.m_bVisible = true;
+        this.visible = true;
     }
 
     protected onHide(userData: UserData): void {
         // XXX: SetLayerRecursively.
-        this.m_bVisible = false;
+        this.visible = false;
         this.m_bAvailable = false;
     }
 

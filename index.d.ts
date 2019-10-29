@@ -61,6 +61,10 @@ declare namespace atsframework {
     export type LoadConfigUpdateEventHandler          = (configAssetName: string, loadType: LoadType, progress: number, userData: UserData) => void;
     export type LoadConfigDependencyAssetEventHandler = LoadAssetDependencyCallback;
 
+    ////////////////////////////////////////////////////////////////////////////
+    // ConfigManager
+    ////////////////////////////////////////////////////////////////////////////
+
     export interface IConfigHelper {
         loadConfig(configAsset: object, loadType: LoadType, userData: UserData): boolean;
 
@@ -106,12 +110,20 @@ declare namespace atsframework {
 
     } // class ConfigManager
 
+    ////////////////////////////////////////////////////////////////////////////
+    // DataNodeManager
+    ////////////////////////////////////////////////////////////////////////////
+
     export class DataNodeManager extends FrameworkModule {
 
         protected update(elapsed: number, realElapsed: number): void;
         protected shutdown(): void;
 
     } // class DataNodeManager
+
+    ////////////////////////////////////////////////////////////////////////////
+    // DataTableManager
+    ////////////////////////////////////////////////////////////////////////////
 
     export type DataTableRawContentType = string | ArrayBuffer | Blob;
     export type LoadDataTableInfo = {
@@ -206,6 +218,10 @@ declare namespace atsframework {
 
     } // class DataTableManager
 
+    ////////////////////////////////////////////////////////////////////////////
+    // EntityManager
+    ////////////////////////////////////////////////////////////////////////////
+
     export interface IEntity {
 
         readonly id: number;
@@ -271,7 +287,7 @@ declare namespace atsframework {
     export type ShowEntityInfo = {
         serialId: number,
         entityId: number,
-        entityGroup: EntityGroup,
+        entityGroup: IEntityGroup,
         userData: UserData,
     } // type ShowEntityInfo
 
@@ -289,6 +305,7 @@ declare namespace atsframework {
         readonly hideEntityComplete: EventHandler<HideEntityCompleteEventHandler>;
 
         resourceManager: IResourceManager;
+        objectPoolManager: ObjectPoolManager;
         entityHelper: IEntityHelper;
 
         hasEntityGroup(entityGroupName: string): boolean;
@@ -306,7 +323,7 @@ declare namespace atsframework {
         getEntity(entityAssetName: string): IEntity | null;
 
         getEntities(entityAssetName: string): IEntity[];
-        getEntities(entityAssetName, results: IEntity[]): IEntity[];
+        getEntities(entityAssetName: string, results: IEntity[]): IEntity[];
 
         getAllLoadedEntities(): IEntity[];
         getAllLoadedEntities(results: IEntity[]): IEntity[];
@@ -357,7 +374,14 @@ declare namespace atsframework {
         detachChildEntities(parentEntity: IEntity): void;
         detachChildEntities(parentEntity: IEntity, userData: UserData): void;
 
+        update(elapsed: number, realElapsed: number): void;
+        shutdown(): void;
+
     } // EntityManager
+
+    ////////////////////////////////////////////////////////////////////////////
+    // EventManager
+    ////////////////////////////////////////////////////////////////////////////
 
     export type EventID = number | string;
 
@@ -383,6 +407,10 @@ declare namespace atsframework {
         protected shutdown(): void;
 
     } // class EventManager
+
+    ////////////////////////////////////////////////////////////////////////////
+    // FsmManager
+    ////////////////////////////////////////////////////////////////////////////
 
     export interface FsmBase {
         readonly name: string;
@@ -461,6 +489,162 @@ declare namespace atsframework {
 
     } // class FsmManager
 
+    //////////////////////////////////////////////////////////////////
+    // ObjectPoolManager
+    //////////////////////////////////////////////////////////////////
+
+    export type CreateSingleSpawnObjectPoolOption = {
+        name?: string,
+        capacity?: number,
+        expireTime?: number,
+        priority?: number
+    };
+
+    export type CreateMultiSpawnObjectPoolOption = CreateSingleSpawnObjectPoolOption & {
+        autoReleaseInterval?: number,
+        allowMultiSpawn?: boolean
+    };
+
+    export type ObjectInfo = {
+        name: string;
+        locked: boolean;
+        customCanReleaseFlag: boolean;
+        priority: number;
+        lastUseTime: number;
+        isInUse: boolean;
+        spawnCount: number;
+    } // type ObjectInfo
+
+    export abstract class ObjectBase {
+
+        readonly name: string;
+        readonly target: object;
+        locked: boolean;
+        priority: number;
+        readonly customCanReleaseFlag: boolean;
+        lastUseTime: number;
+
+        protected initialize(target: object): void;
+        protected initialize(name: string, target: object): void;
+        protected initialize(name: string, target: object, locked: boolean): void;
+        protected initialize(name: string, target: object, locked: boolean, priority: number): void;
+
+        clear(): void;
+
+        protected onSpawn(): void;
+
+        protected onUnspawn(): void;
+
+        protected abstract release(isShutdown: boolean): void;
+
+    } // class ObjectBase
+
+    export interface IObjectPool<T extends ObjectBase> {
+
+        name: string;
+        // fullName: string;
+        // objectType: new () => object;
+        count: number;
+        canReleaseCount: number;
+        allowMultiSpawn: boolean;
+        autoReleaseInterval: number;
+        capacity: number;
+        expireTime: number;
+        priority: number;
+
+        register(obj: T, spawned: boolean): void;
+
+        canSpawn(): boolean;
+        canSpawn(name: string): boolean;
+
+        spawn(): T | null;
+        spawn(name: string): T | null;
+
+        unspawn(obj: T): void;
+        unspawnByTarget(target: object): void;
+
+        setLocked(obj: T, locked: boolean): void;
+        setLockedByTarget(target: object, locked: boolean): void;
+
+        setPriority(obj: T, priority: number): void;
+        setPriorityByTarget(target: object, priority: number): void;
+
+        release(): void;
+        release(toReleaseCount: number): void;
+        release(filter: (candidateObjects: T[], toReleaseCount: number, expireTime: number) => T[]): void;
+        release(toReleaseCount: number, filter: (candidateObjects: T[], toReleaseCount: number, expireTime: number) => T[]): void;
+
+        releaseAllUnused(): void;
+
+    } // interface IObjectPool
+
+    export abstract class ObjectPoolBase {
+
+        name: string;
+        // get fullName(): string { return `${this.objectType}.${this.name}`; }
+
+        // readonly abstract objectType: new () => object;
+        readonly abstract count: number;
+        readonly abstract canReleaseCount: number;
+        readonly abstract allowMultiSpawn: boolean;
+        readonly abstract autoReleaseInterval: number;
+        abstract capacity: number;
+        abstract expireTime: number;
+        abstract priority: number;
+
+        abstract release(): void;
+        abstract release(toReleaseCount: number): void;
+
+        abstract releaseAllUnused(): void;
+        abstract getAllObjectInfos(): ObjectInfo[];
+
+        abstract update(elapsed: number, realElapsed: number): void;
+        abstract shutdown(): void;
+
+    } // class ObjectPoolBase
+
+    export class ObjectPoolManager extends FrameworkModule {
+
+        priority: number;
+        count: number;
+
+        protected update(elapsed: number, realElapsed: number): void;
+        protected shutdown(): void;
+
+        hasObjectPool(name: string): boolean;
+
+        getObjectPool<T extends ObjectBase>(name: string): IObjectPool<T> | null;
+
+        getObjectPoolBase(name: string): ObjectPoolBase | null;
+        getObjectPoolBase(predicate: (obj: ObjectPoolBase) => boolean): ObjectPoolBase | null;
+
+        getObjectPools(predicate: (obj: ObjectPoolBase) => boolean): ObjectPoolBase[];
+        getObjectPools(predicate: (obj: ObjectPoolBase) => boolean, results: ObjectPoolBase[]): ObjectPoolBase[];
+
+        getAllObjectPools(): ObjectPoolBase[];
+        getAllObjectPools(sort: boolean): ObjectPoolBase[];
+        getAllObjectPools(results: ObjectPoolBase[]): ObjectPoolBase[];
+        getAllObjectPools(sort: boolean, results: ObjectPoolBase[]): ObjectPoolBase[];
+
+        createSingleSpawnObjectPool<T extends ObjectBase>(): IObjectPool<T>;
+        createSingleSpawnObjectPool<T extends ObjectBase>(options: CreateSingleSpawnObjectPoolOption): IObjectPool<T>;
+
+        createMutliSpawnObjectPool<T extends ObjectBase>(): IObjectPool<T>;
+        createMutliSpawnObjectPool<T extends ObjectBase>(options: CreateMultiSpawnObjectPoolOption): IObjectPool<T>;
+
+        destroyObjectPool<T extends ObjectBase>(): boolean;
+        destroyObjectPool<T extends ObjectBase>(name: string): boolean;
+        destroyObjectPool<T extends ObjectBase>(objectPool: IObjectPool<T>): boolean;
+
+        release(): void;
+        releaseAllUnused(): void;
+
+    } // class ObjectPoolManager
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ProcedureManager
+    ////////////////////////////////////////////////////////////////////////////
+
     export abstract class ProcedureBase extends FsmState<ProcedureManager> {
         // NOOP.
     } // class ProcedureBase
@@ -479,6 +663,10 @@ declare namespace atsframework {
         protected shutdown(): void;
 
     } // class ProcedureManager
+
+    ////////////////////////////////////////////////////////////////////////////
+    // ResourceManager
+    ////////////////////////////////////////////////////////////////////////////
 
     export type LoadAssetSuccessCallback = (assetName: string, asset: object, duration: number, userData: UserData) => void;
     export type LoadAssetFailureCallback = (assetName: string, status: LoadResourceStatus, errorMessage: string, userData: UserData) => void;
@@ -614,6 +802,10 @@ declare namespace atsframework {
 
     } // class ResourceManager
 
+    ////////////////////////////////////////////////////////////////////////////
+    // SceneManager
+    ////////////////////////////////////////////////////////////////////////////
+
     export type LoadSceneSuccessEventHandler = LoadSceneSuccessCallback;
     export type LoadSceneFailureEventHandler = (sceneAssetName: string, errorMessage: string, userData: UserData) => void;
     export type LoadSceneUpdateEventHandler = LoadSceneUpdateCallback;
@@ -656,6 +848,10 @@ declare namespace atsframework {
         protected update(elapsed: number, realElapsed: number): void;
         protected shutdown(): void;
     } // class SceneManager
+
+    ////////////////////////////////////////////////////////////////////////////
+    // SoundManager
+    ////////////////////////////////////////////////////////////////////////////
 
     export namespace Constant {
         export const DefaultTime: number;
@@ -893,6 +1089,10 @@ declare namespace atsframework {
 
     } // class SoundManager
 
+    ////////////////////////////////////////////////////////////////////////////
+    // UIManager
+    ////////////////////////////////////////////////////////////////////////////
+
     export interface IUIGroup {
         name: string;
         depth: number;
@@ -990,6 +1190,7 @@ declare namespace atsframework {
 
         uiFormHelper: IUIFormHelper;
 
+        objectPoolManager: ObjectPoolManager;
         resourceManager: IResourceManager;
         uiGroupCount: number;
 

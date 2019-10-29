@@ -15,7 +15,6 @@ export default class Entity extends cc.Component implements IEntity {
 
 	private m_iEntityId!: number;
 	private m_sEntityAssetName!: string;
-	private m_pHandle!: object;
 	private m_pEntityGroup!: IEntityGroup;
 	private m_pEntityLogic!: EntityLogic;
 
@@ -28,7 +27,7 @@ export default class Entity extends cc.Component implements IEntity {
 	}
 
 	get handle(): object {
-		return this.m_pHandle;
+		return this.node;
 	}
 
 	get logic(): EntityLogic {

@@ -174,6 +174,9 @@ export default class EntityComponent extends FrameworkComponent {
         // Resource manager.
         this.m_pEntityManager.resourceManager = FrameworkModule.getModule(atsframework.ResourceManager);
 
+        // ObjectPool manager.
+        this.m_pEntityManager.objectPoolManager = FrameworkModule.getModule(atsframework.ObjectPoolManager);
+
         // Helper.
         let v_pEntityHelper: EntityHelperBase = Helper.createHelper(this.m_sEntityHelperTypeName, null);
         if (!v_pEntityHelper)
@@ -235,7 +238,7 @@ export default class EntityComponent extends FrameworkComponent {
         v_pEntityGroupHelper.node.parent = this.m_pInstanceRoot;
         v_pEntityGroupHelper.node.setScale(cc.Vec3.ONE);
 
-        this.m_pEntityManager.addEntityGroup(entityGroupName, instanceAutoReleaseInterval, instanceCapacity, instanceExpireTime, instancePriority, v_pEntityGroupHelper);
+        return this.m_pEntityManager.addEntityGroup(entityGroupName, instanceAutoReleaseInterval, instanceCapacity, instanceExpireTime, instancePriority, v_pEntityGroupHelper);
     }
 
     hasEntity(entityId: number): boolean;

@@ -131,8 +131,6 @@ export default class UIComponent extends FrameworkComponent {
         this.m_rUIManager.openUIFormFailure.add(this.onOpenUIFormFailure, this);
         this.m_rUIManager.openUIFormUpdate.add(this.onOpenUIFormUpdate, this);
         this.m_rUIManager.closeUIFormComplete.add(this.onCloseUIFormComplete, this);
-
-        this.m_rUIManager.resourceManager = FrameworkModule.getOrAddModule(atsframework.ResourceManager);
     }
 
     onDestroy(): void {
@@ -144,6 +142,8 @@ export default class UIComponent extends FrameworkComponent {
 
     start(): void {
         this.m_rEventRef = FrameworkComponent.getComponent(EventComponent);
+        this.m_rUIManager.resourceManager = FrameworkModule.getModule(atsframework.ResourceManager);
+        this.m_rUIManager.objectPoolManager = FrameworkModule.getModule(atsframework.ObjectPoolManager);
 
         // let v_pUiFormHelper: UIFormHelperBase = Helper.createHelper(this.m_sUIFormHelperClassName, this.m_pCustomUIFormHelper);
         let v_pUiFormHelper: UIFormHelperBase = Helper.createHelper(this.m_sUIFormHelperClassName, null);

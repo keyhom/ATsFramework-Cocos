@@ -109,7 +109,10 @@ class CocosResourceLoader implements atsframework.IResourceLoader {
 
     unloadAsset<T>(asset: T): void {
         let v_pAsset: cc.Asset = asset as any;
-        cc.loader.releaseAsset(v_pAsset);
+        if (v_pAsset.isValid)
+            cc.loader.releaseAsset(v_pAsset);
+        // else
+        //     cc.warn(`Unload invalid asset: ${v_pAsset}`);
     }
 
     loadScene(sceneAssetName: string, loadSceneCallbacks: atsframework.LoadSceneCallbacks): void;

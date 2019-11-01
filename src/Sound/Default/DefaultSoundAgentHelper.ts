@@ -10,7 +10,7 @@ export default class DefaultSoundAgentHelper extends SoundAgentHelperBase {
     private m_pResetSoundAgentEventHandler: atsframework.EventHandler<atsframework.ResetSoundAgentEventHandler> = new atsframework.EventHandler();
 
     get isPlaying(): boolean {
-        return this.m_pAudioSource ? this.m_pAudioSource.isPlaying : false;
+        return this.m_pAudioSource && this.m_pAudioSource.clip ? this.m_pAudioSource.isPlaying : false;
     }
 
     get length(): number {

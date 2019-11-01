@@ -16,6 +16,7 @@ export default class DefaultSoundHelper extends SoundHelperBase {
     }
 
     releaseSoundAsset(soundAsset: object): void {
+        // cc.warn(`release sound asset: ${soundAsset}`);
         this.m_pResourceComponent.unloadAsset(soundAsset);
     }
 

@@ -63,7 +63,7 @@ export default class Entity extends cc.Component implements IEntity {
 			this.m_pEntityLogic = null;
 		}
 
-		this.m_pEntityLogic = this.addComponent(v_pEntityLogicType);
+		this.m_pEntityLogic = this.getComponent(v_pEntityLogicType) || this.addComponent(v_pEntityLogicType);
 		if (!this.m_pEntityLogic) {
 			throw new Error(`Entity '${entityAssetName}' can not add entity logic.`);
 		}
@@ -104,6 +104,9 @@ export default class Entity extends cc.Component implements IEntity {
 	}
 
 	onUpdate(elapsed: number, readElapsed: number): void {
+		if (!this.m_pEntityLogic)
+			throw new Error('Invalid entity logic.');
+
 		(this.m_pEntityLogic as any).onUpdate(elapsed, readElapsed);
 	}
 

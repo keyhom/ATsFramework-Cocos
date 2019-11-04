@@ -869,11 +869,18 @@ declare namespace atsframework {
     } // namespace Constant
 
     export interface ISoundGroup {
-        // TODO: interface ISoundGroup
+        readonly name: string;
+        readonly soundAgentCount: number;
+        avoidBeingReplacedBySamePriority: boolean;
+        mute: boolean;
+        volume: number;
+        readonly helper: ISoundGroupHelper;
+        stopAllLoadedSounds(): void;
+        stopAllLoadedSounds(fadeOutSeconds: number): void;
     } // interface ISoundGroup
 
     export interface ISoundGroupHelper {
-        // TODO: interface ISoundGroupHelper
+        // NOOP.
     } // interface ISoundGroupHelper
 
     export interface ISoundHelper {

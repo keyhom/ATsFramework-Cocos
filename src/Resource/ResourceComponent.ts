@@ -11,6 +11,9 @@ export default class ResourceComponent extends FrameworkComponent {
 
     private m_pResourceManager: IResourceManager = null;
 
+    @property({ displayName: 'Resource Loader' })
+    private m_pResourceLoaderName: string = 'DefaultResourceLoader';
+
     onLoad(): void {
         super.onLoad();
 
@@ -21,7 +24,9 @@ export default class ResourceComponent extends FrameworkComponent {
             throw new Error("Resource manager is invalid.");
         }
 
-        v_pResourceManager.resourceLoader = new CocosResourceLoader();
+        // v_pResourceManager.resourceLoader = new CocosResourceLoader();
+        let v_pLoaderType: new () => atsframework.IResourceLoader = cc.js.getClassByName(this.m_pResourceLoaderName) as new() => atsframework.IResourceLoader;
+        v_pResourceManager.resourceLoader = new v_pLoaderType();
     }
 
     start(): void {
@@ -34,7 +39,8 @@ export default class ResourceComponent extends FrameworkComponent {
 
 } // class ResourceComponent
 
-class CocosResourceLoader implements atsframework.IResourceLoader {
+@ccclass('DefaultResourceLoader')
+class CocosResourceLoader extends cc.Object implements atsframework.IResourceLoader {
 
     hasAsset(assetName: string): boolean {
         return cc.loader.getRes(assetName);
@@ -90,6 +96,27 @@ class CocosResourceLoader implements atsframework.IResourceLoader {
             v_pUserData = arg4;
         }
 
+        // let v_fStartStamp: number = new Date().valueOf();
+        // cc.loader.loadRes(assetName, (completedCount: number, totalCount: number, item: any) => {
+        //     if (v_pLoadAssetCallbacks) {
+        //         v_pLoadAssetCallbacks.update(assetName, 1.0 * completedCount / totalCount, v_pUserData);
+        //     }
+        // }, (error: Error, resource: any) => {
+        //     if (!v_pLoadAssetCallbacks)
+        //         return;
+
+        //     if (error) {
+        //         v_pLoadAssetCallbacks.failure(assetName, atsframework.LoadResourceStatus.AssetError, error.message, v_pUserData);
+        //     } else {
+        //         v_pLoadAssetCallbacks.success(assetName, resource, new Date().valueOf() - v_fStartStamp, v_pUserData);
+        //     }
+        // });
+        this.loadAssetImpl<T>(assetName, v_pLoadAssetCallbacks, v_pUserData);
+    }
+
+    protected loadAssetImpl<T>(assetName: string, loadAssetCallbacks: atsframework.LoadAssetCallbacks, userData: atsframework.UserData): void {
+        let v_pLoadAssetCallbacks: atsframework.LoadAssetCallbacks = loadAssetCallbacks;
+        let v_pUserData: atsframework.UserData = userData;
         let v_fStartStamp: number = new Date().valueOf();
         cc.loader.loadRes(assetName, (completedCount: number, totalCount: number, item: any) => {
             if (v_pLoadAssetCallbacks) {
@@ -108,11 +135,21 @@ class CocosResourceLoader implements atsframework.IResourceLoader {
     }
 
     unloadAsset<T>(asset: T): void {
-        let v_pAsset: cc.Asset = asset as any;
-        if (v_pAsset.isValid)
-            cc.loader.releaseAsset(v_pAsset);
+        if (!(asset instanceof cc.Asset))
+            return;
+
+        let v_pAsset: cc.Asset = asset as cc.Asset;
+        this.unloadAssetImpl(v_pAsset);
+    }
+
+    protected unloadAssetImpl(asset: cc.Asset): void {
+        if (!asset.isValid)
+            return;
+
+        if (!cc.loader.isAutoRelease(asset))
+            cc.loader.releaseAsset(asset);
         // else
-        //     cc.warn(`Unload invalid asset: ${v_pAsset}`);
+        //     cc.warn(`Unload invalid asset: ${asset}`);
     }
 
     loadScene(sceneAssetName: string, loadSceneCallbacks: atsframework.LoadSceneCallbacks): void;

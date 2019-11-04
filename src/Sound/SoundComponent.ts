@@ -86,6 +86,8 @@ export class SoundGroupInfo {
     volume: number = 1;
     @property(cc.Integer)
     soundAgentCount: number = 0;
+    @property(cc.Boolean)
+    autoRelease: boolean = false;
 
 } // SoundGroupInfo
 
@@ -353,6 +355,13 @@ export default class SoundComponent extends FrameworkComponent {
                 // FIXME: v_pSoundAgentHelper.setBindingEntity(v_pSoundAgentHelper.v_pInfo);
             } else {
                 v_pSoundAgentHelper.setWorldPosition(v_pInfo.worldPosition);
+            }
+        }
+
+        let v_pSoundGroup: atsframework.ISoundGroup = soundAgent.soundGroup;
+        for (const groupInfo of this.m_pSoundGroupInfos) {
+            if (groupInfo.name == v_pSoundGroup.name) {
+                cc.loader.setAutoRelease(soundAssetName, groupInfo.autoRelease);
             }
         }
 

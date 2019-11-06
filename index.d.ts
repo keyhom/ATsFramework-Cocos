@@ -1097,6 +1097,96 @@ declare namespace atsframework {
     } // class SoundManager
 
     ////////////////////////////////////////////////////////////////////////////
+    // SettingManager
+    ////////////////////////////////////////////////////////////////////////////
+
+    export interface ISettingHelper {
+
+        load(): boolean;
+
+        save(): boolean;
+
+        hasSetting(name: string): boolean;
+
+        removeSetting(name: string): void;
+
+        removeAllSettings(): void;
+
+        getBoolean(name: string): boolean;
+        getBoolean(name: string, defaultValue: boolean): boolean;
+        setBoolean(name: string, value: boolean): void;
+
+        getInteger(name: string): number;
+        getInteger(name: string, defaultValue: number): number;
+        setInteger(name: string, value: number): void;
+
+        getFloat(name: string): number;
+        getFloat(name: string, defaultValue: number): number;
+        setFloat(name: string, value: number): void;
+
+        getString(name: string): string;
+        getString(name: string, defaultValue: string): string;
+        setString(name: string, value: string): void;
+
+        getObject<T>(type: new () => T, name: string): any;
+        getObject<T>(type: new () => T, name: string, defaultValue: any): any;
+        setObject(name: string, obj: any): void;
+
+    } // interface ISettingHelper
+
+    /**
+     * Setting configured management.
+     */
+    export class SettingManager extends FrameworkModule {
+
+        settingHelper: ISettingHelper;
+
+        load(): boolean;
+
+        save(): boolean;
+
+        hasSetting(settingName: string): boolean;
+
+        removeSetting(settingName: string): void;
+
+        removeAllSettings(): void;
+
+        getBoolean(settingName: string): boolean;
+        getBoolean(settingName: string, defaultValue: boolean): boolean;
+
+        setBoolean(settingName: string, value: boolean): void;
+
+        getInteger(settingName: string): number;
+        getInteger(settingName: string, defaultValue: number): number;
+
+        setInteger(settingName: string, value: number): void;
+
+        getFloat(settingName: string): number;
+        getFloat(settingName: string, defaultValue: number): number;
+
+        setFloat(settingName: string, value: number): void;
+
+        getString(settingName: string): string;
+        getString(settingName: string, defaultValue: string): string;
+
+        setString(settingName: string, value: string): void;
+
+        getObject<T>(type: new () => T, settingName: string): T;
+        getObject<T>(type: new () => T, settingName: string, defaultValue: T | null): T;
+
+        setObject<T>(settingName: string, value: T | null): void;
+
+        protected update(elapsed: number, realElapsed: number): void {
+            // NOOP.
+        }
+
+        protected shutdown(): void {
+            // NOOP.
+        }
+
+    } // class SettingManager
+
+    ////////////////////////////////////////////////////////////////////////////
     // UIManager
     ////////////////////////////////////////////////////////////////////////////
 

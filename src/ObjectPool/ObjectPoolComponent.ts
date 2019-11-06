@@ -1,6 +1,6 @@
 import FrameworkComponent from "../Base/FrameworkComponent";
 
-const { ccclass, property, menu, disallowMultiple } = cc._decorator;
+const { ccclass, property, menu, disallowMultiple, inspector } = cc._decorator;
 
 type ObjectPoolManager = atsframework.ObjectPoolManager;
 const ObjectPoolManager = atsframework.ObjectPoolManager;
@@ -16,6 +16,7 @@ type IObjectPool<T extends ObjectBase> = atsframework.IObjectPool<T>;
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/ObjectPool')
+@inspector('packages://atsframework-cocos/inspector/default-inspector.js')
 export default class ObjectPoolComponent extends FrameworkComponent {
 
     private m_pObjectPoolManager!: ObjectPoolManager;

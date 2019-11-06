@@ -1,10 +1,11 @@
 import FrameworkComponent from "../Base/FrameworkComponent";
 
-const { ccclass, property, disallowMultiple, menu } = cc._decorator;
+const { ccclass, property, disallowMultiple, menu, inspector } = cc._decorator;
 
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/Fsm')
+@inspector('packages://atsframework-cocos/inspector/default-inspector.js')
 export default class FsmComponent extends FrameworkComponent {
 
     private m_pFsmManager: atsframework.FsmManager;

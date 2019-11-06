@@ -5,11 +5,13 @@ Vue.component('procedure-inspector', {
         <h4 :style="[cssWrapper, cssIndent1]" :class="cssFlexHorCenter">
             Available Procedures
         </h4>
-        <div :style="[cssWrapper, cssIndent2]" :class="cssFlexHorCenter"
-                v-for="item in allProcedureNames()"
-                :indent="indent+1">
-            <ui-checkbox :checked="checkProcedureEnable(item)" @change="onProcedureStatusChange">{{item}}</ui-checkbox>
-        </div>
+        <ui-box-container class="shadow">
+            <div :style="[cssWrapper, cssIndent2]" :class="cssFlexHorCenter"
+                    v-for="item in allProcedureNames()"
+                    :indent="indent+1">
+                <ui-checkbox :checked="checkProcedureEnable(item)" @change="onProcedureStatusChange">{{item}}</ui-checkbox>
+            </div>
+        </ui-box-container>
         <ui-prop
             :name="target.entranceProcedureName.name"
             :tooltip="target.entranceProcedureName.attrs.tooltip"

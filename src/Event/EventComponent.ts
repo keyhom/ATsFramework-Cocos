@@ -1,10 +1,11 @@
 import FrameworkComponent from "../Base/FrameworkComponent";
 
-const { ccclass, property, menu, disallowMultiple } = cc._decorator;
+const { ccclass, property, menu, disallowMultiple, inspector } = cc._decorator;
 
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/Event')
+@inspector('packages://atsframework-cocos/inspector/default-inspector.js')
 export default class EventComponent extends FrameworkComponent {
 
     private m_pEventManager: atsframework.EventManager = null;

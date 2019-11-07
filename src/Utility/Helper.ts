@@ -5,7 +5,16 @@ export function helper(constructor: Function): void {
 	g_pHelpers[className] = constructor;
 } // function helper
 
+@cc._decorator.ccclass('Helper')
 export default /* static */ class Helper {
+
+    static getAllHelpers(): Function[] {
+        let constructors: Function[] = [];
+        for (const className in g_pHelpers) {
+            constructors.push(g_pHelpers[className]);
+        }
+        return constructors;
+    }
 
     static createHelper<T extends cc.Component>(helperClassName: string, customHelper: T): T;
     static createHelper<T extends cc.Component>(helperClassName: string, customHelper: T, index: number): T;

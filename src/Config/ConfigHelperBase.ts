@@ -1,6 +1,7 @@
 /**
  *
  */
+@cc._decorator.ccclass
 export default abstract class ConfigHelperBase extends cc.Component implements atsframework.IConfigHelper {
 
     loadConfig(configAsset: object, loadType: atsframework.LoadType, userData: atsframework.UserData): boolean {

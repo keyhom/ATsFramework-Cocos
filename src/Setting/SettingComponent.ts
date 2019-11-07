@@ -10,11 +10,15 @@ const SettingManager = atsframework.SettingManager;
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/Setting')
+@inspector('packages://atsframework-cocos/inspector/setting-inspector.js')
 export default class SettingComponent extends FrameworkComponent {
 
     private m_pSettingManager: SettingManager | null = null;
 
-    @property({ displayName: 'Setting Helper' })
+    @property({
+        displayName: 'Setting Helper',
+        tooltip: 'A helper for operating the setting function.'
+    })
     private m_sSettingHelperTypeName: string = 'DefaultSettingHelper';
 
     onLoad(): void {

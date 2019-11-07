@@ -1,6 +1,6 @@
 `use strict`;
 
-Vue.component('procedure-inspector', {
+Vue.component('atsframework-procedure-inspector', {
     template: `
         <h4 :style="[cssWrapper, cssIndent1]" :class="cssFlexHorCenter">
             Available Procedures

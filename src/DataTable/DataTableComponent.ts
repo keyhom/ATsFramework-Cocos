@@ -4,7 +4,7 @@ import DataTableHelperBase from "./DataTableHelperBase";
 import Helper from "../Utility/Helper";
 import DataRowBase from "./DataRowBase";
 
-const { ccclass, property, menu, disallowMultiple } = cc._decorator;
+const { ccclass, property, menu, disallowMultiple, inspector } = cc._decorator;
 
 type FrameworkModule = atsframework.FrameworkModule;
 const FrameworkModule = atsframework.FrameworkModule;
@@ -71,15 +71,25 @@ const DefaultPriority: number = 0;
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/DataTable')
+@inspector('packages://atsframework-cocos/inspector/datatable-inspector.js')
 export default class DataTableComponent extends FrameworkComponent {
 
-    @property
+    @property({
+        displayName: 'Enable Load Update Event',
+        tooltip: 'Enable/Disable the update event during datatable load.'
+    })
     private m_bEnableLoadDataTableUpdateEvent: boolean = false;
 
-    @property
+    @property({
+        displayName: 'Enable Load DependencyAsset Event',
+        tooltip: 'Enable/Disable the dependency asset event during datatable load.'
+    })
     private m_bEnableLoadDataTableDependencyAssetEvent: boolean = false;
 
-    @property
+    @property({
+        displayName: 'DataTable Helper',
+        tooltip: 'A helper for parsing datatable format.'
+    })
     private m_sDataTableHelperTypeName: string = "DefaultDataTableHelper";
 
     private m_pDataTableManager!: DataTableManager;

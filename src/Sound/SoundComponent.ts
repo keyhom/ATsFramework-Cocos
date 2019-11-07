@@ -5,7 +5,7 @@ import SoundHelperBase from "./SoundHelperBase";
 import SoundGroupHelperBase from "./SoundGroupHelperBase";
 import SoundAgentHelperBase from "./SoundAgentHelperBase";
 
-const { ccclass, property, disallowMultiple, menu } = cc._decorator;
+const { ccclass, property, disallowMultiple, menu, inspector } = cc._decorator;
 
 type FrameworkModule = atsframework.FrameworkModule;
 const FrameworkModule = atsframework.FrameworkModule;
@@ -96,6 +96,7 @@ const DefaultPriority: number = 0;
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/Sound')
+@inspector('packages://atsframework-cocos/inspector/sound-inspector.js')
 export default class SoundComponent extends FrameworkComponent {
 
     private m_pSoundManager!: SoundManager;

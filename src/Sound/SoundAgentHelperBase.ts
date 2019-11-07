@@ -1,3 +1,4 @@
+@cc._decorator.ccclass
 export default abstract class SoundAgentHelperBase extends cc.Component implements atsframework.ISoundAgentHelper {
 
     abstract readonly isPlaying: boolean;

@@ -90,6 +90,7 @@ class EntityGroupInfo {
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/Entity')
+@inspector('packages://atsframework-cocos/inspector/entity-inspector.js')
 export default class EntityComponent extends FrameworkComponent {
 
     private m_pEntityManager!: EntityManager;
@@ -129,12 +130,12 @@ export default class EntityComponent extends FrameworkComponent {
     private m_pInstanceRoot: cc.Node = null;
 
     @property({
-        displayName: 'Entity helper typename'
+        displayName: 'Entity Helper'
     })
     private m_sEntityHelperTypeName: string = 'DefaultEntityHelper';
 
     @property({
-        displayName: 'Entity group helper typename'
+        displayName: 'Entity Group Helper'
     })
     private m_sEntityGroupHelperTypeName: string = 'DefaultEntityGroupHelper';
 

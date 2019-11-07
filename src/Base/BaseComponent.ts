@@ -1,17 +1,21 @@
 import FrameworkComponent from "./FrameworkComponent";
 
-const { ccclass, property, disallowMultiple, menu } = cc._decorator;
+const { ccclass, property, disallowMultiple, menu, inspector } = cc._decorator;
 const { FrameworkModule } = atsframework;
 
 @ccclass
 @menu('ATsFramework Component/Base')
 @disallowMultiple
+@inspector('packages://atsframework-cocos/inspector/base-inspector.js')
 export default class BaseComponent extends FrameworkComponent {
 
     @property
     private _frameRate: number = 30;
 
-    @property
+    @property({
+        displayName: 'FPS',
+        tooltip: 'Frame rate per second'
+    })
     get frameRate() { return this._frameRate; }
     set frameRate(value) {
         this._frameRate = value;
@@ -21,7 +25,10 @@ export default class BaseComponent extends FrameworkComponent {
     @property
     private _speedMultipiler: number = 1.0;
 
-    @property
+    @property({
+        displayName: 'Speed Multipiler',
+        tooltip: 'A global multipiler for ATsFramework update speed.'
+    })
     get speedMultipiler() { return this._speedMultipiler; }
     set speedMultipiler(value) {
         this._speedMultipiler = value;
@@ -31,7 +38,9 @@ export default class BaseComponent extends FrameworkComponent {
     @property
     private _neverSleep: boolean = true;
 
-    @property
+    @property({
+        displayName: 'Never Sleep'
+    })
     get neverSleep() { return this._neverSleep; }
     set neverSleep(value) {
         this._neverSleep = value;
@@ -44,9 +53,10 @@ export default class BaseComponent extends FrameworkComponent {
         return cc.game.isPaused();
     }
 
-    @property({ displayName: 'Dynamic Altas' })
+    @property
     private m_bEnableDynamicAltasPacked: boolean = true;
 
+    @property({ displayName: 'Dynamic Altas', tooltip: 'Enable/Disable cocos dynamic altas feature.' })
     get enableDynamicAltasPacked(): boolean { return this.m_bEnableDynamicAltasPacked; }
     set enableDynamicAltasPacked(value: boolean) {
         this.m_bEnableDynamicAltasPacked = value;

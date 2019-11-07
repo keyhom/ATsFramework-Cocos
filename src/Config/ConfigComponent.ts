@@ -3,7 +3,7 @@ import Helper from "../Utility/Helper";
 import ConfigHelperBase, { LoadConfigInfo } from "./ConfigHelperBase";
 import EventComponent from "../Event/EventComponent";
 
-const { ccclass, property, disallowMultiple, menu } = cc._decorator;
+const { ccclass, property, disallowMultiple, menu, inspector } = cc._decorator;
 
 type ConfigManager = atsframework.ConfigManager;
 const ConfigManager = atsframework.ConfigManager;
@@ -55,16 +55,17 @@ export const LoadConfigDependecyAssetEventId: string = "loadConfigDependencyAsse
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/Config')
+@inspector('packages://atsframework-cocos/inspector/config-inspector.js')
 export default class ConfigComponent extends FrameworkComponent {
 
     private m_pConfigManager!: ConfigManager;
     private m_pEventComponent!: EventComponent;
 
-    @property
+    @property({ displayName: 'Enable Load Update Event' })
     private m_bEnableLoadConfigUpdateEvent: boolean = false;
-    @property
+    @property({ displayName: 'Enable Load DependencyAsset Event' })
     private m_bEnableLoadConfigDependencyAssetEvent: boolean = false;
-    @property
+    @property({ displayName: 'Config Helper' })
     private m_sConfigHelperTypeName: string = "DefaultConfigHelper";
 
     get configCount(): number {

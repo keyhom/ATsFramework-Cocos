@@ -1,12 +1,12 @@
 `use strict`;
 
-Vue.component('atsframework-inspector', {
+Vue.component('atsframework-default-inspector', {
     template: `
         <ui-box-container class="shadow">
-            <editor-label class="style-scope yellow">
+            <div class="style-scope yellow">
                 <i class="icon-lock style-scope"></i>
                 Available during runtime only!
-            </editor-label>
+            </div>
         </ui-box-container>
     `,
     props: {

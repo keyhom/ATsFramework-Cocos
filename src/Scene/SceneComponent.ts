@@ -1,7 +1,7 @@
 import FrameworkComponent from "../Base/FrameworkComponent";
 import EventComponent from "../Event/EventComponent";
 
-const { ccclass, property, disallowMultiple, menu } = cc._decorator;
+const { ccclass, property, disallowMultiple, menu, inspector } = cc._decorator;
 
 type UserData = atsframework.UserData;
 
@@ -60,14 +60,22 @@ export const UnloadSceneFailureEventId: string = "unloadSceneFailure";
 @ccclass
 @disallowMultiple
 @menu('ATsFramework Component/Scene')
+@inspector('packages://atsframework-cocos/inspector/scene-inspector.js')
 export default class SceneComponent extends FrameworkComponent {
 
     private m_pEventComponent!: EventComponent;
     private m_pSceneManager!: SceneManager;
 
-    @property({ displayName: "Enable Update Event" })
+    @property({
+        displayName: "Enable Update Event",
+        tooltip: 'Enable/Disable the update event dispatch'
+    })
     private m_bEnableLoadSceneUpdateEvent: boolean = false;
-    @property({ displayName: "Enable Dependency Asset Event" })
+
+    @property({
+        displayName: "Enable Dependency Asset Event",
+        tooltip: 'Enable/Disable the dependency asset event dispatch'
+    })
     private m_bEnableLoadSceneDependencyAssetEvent: boolean = false;
 
     private m_pMainCamera!: cc.Camera;

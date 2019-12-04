@@ -110,9 +110,9 @@ export default class ConfigComponent extends FrameworkComponent {
             throw new Error("Can not create config helper.");
         }
 
-        v_pConfigHelper.name = "Config Helper";
+        v_pConfigHelper.node.name = "Config Helper";
         v_pConfigHelper.node.parent = this.node;
-        v_pConfigHelper.node.setScale(cc.Vec3.ONE);
+        v_pConfigHelper.node.setScale(1);
 
         this.m_pConfigManager.configHelper = v_pConfigHelper;
 

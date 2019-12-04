@@ -38,7 +38,7 @@ export default class ResourceComponent extends FrameworkComponent {
 
         v_pHelperLoader.node.name = 'Resource Loader';
         v_pHelperLoader.node.parent = this.node;
-        v_pHelperLoader.node.setScale(cc.Vec3.ONE);
+        v_pHelperLoader.node.setScale(1);
 
         v_pResourceManager.resourceLoader = v_pHelperLoader;
     }

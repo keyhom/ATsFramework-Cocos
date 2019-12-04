@@ -185,14 +185,14 @@ export default class EntityComponent extends FrameworkComponent {
 
         v_pEntityHelper.node.name = 'Entity Helper';
         v_pEntityHelper.node.parent = this.node;
-        v_pEntityHelper.node.setScale(cc.Vec3.ONE);
+        v_pEntityHelper.node.setScale(1);
 
         this.m_pEntityManager.entityHelper = v_pEntityHelper;
 
         if (!this.m_pInstanceRoot) {
             this.m_pInstanceRoot = new cc.Node('Entity Instances');
             this.m_pInstanceRoot.parent = this.node;
-            this.m_pInstanceRoot.setScale(cc.Vec3.ONE);
+            this.m_pInstanceRoot.setScale(1);
         }
 
         this.m_pEntityGroups = this.m_pEntityGroups || [];
@@ -237,7 +237,7 @@ export default class EntityComponent extends FrameworkComponent {
 
         v_pEntityGroupHelper.node.name = `Entity Group - ${entityGroupName}`;
         v_pEntityGroupHelper.node.parent = this.m_pInstanceRoot;
-        v_pEntityGroupHelper.node.setScale(cc.Vec3.ONE);
+        v_pEntityGroupHelper.node.setScale(1);
 
         return this.m_pEntityManager.addEntityGroup(entityGroupName, instanceAutoReleaseInterval, instanceCapacity, instanceExpireTime, instancePriority, v_pEntityGroupHelper);
     }

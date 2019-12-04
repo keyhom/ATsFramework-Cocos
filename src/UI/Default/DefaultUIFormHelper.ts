@@ -25,7 +25,7 @@ export class DefaultUIFormHelper extends UIFormHelperBase {
         }
 
         v_pNodeRef.setParent((<any>uiGroup.helper).node);
-        v_pNodeRef.setScale(cc.Vec3.ONE);
+        v_pNodeRef.setScale(1);
 
         let v_pUiForm = v_pNodeRef.getComponent(UIForm);
         if (null == v_pUiForm) {

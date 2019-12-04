@@ -168,14 +168,14 @@ export default class SoundComponent extends FrameworkComponent {
 
         v_pSoundHelper.node.name = "Sound Helper";
         v_pSoundHelper.node.parent = this.node;
-        v_pSoundHelper.node.setScale(cc.Vec3.ONE);
+        v_pSoundHelper.node.setScale(1);
 
         this.m_pSoundManager.soundHelper = v_pSoundHelper;
 
         if (!this.m_pInstanceRoot) {
             this.m_pInstanceRoot = (new cc.Node("Sound Instances"));
             this.m_pInstanceRoot.parent = this.node;
-            this.m_pInstanceRoot.setScale(cc.Vec3.ONE);
+            this.m_pInstanceRoot.setScale(1);
         }
 
         if (this.m_pSoundGroupInfos) {
@@ -224,7 +224,7 @@ export default class SoundComponent extends FrameworkComponent {
 
         v_pSoundGroupHelper.node.name = `Sound Group - ${soundGroupName}`;
         v_pSoundGroupHelper.node.parent = this.m_pInstanceRoot;
-        v_pSoundGroupHelper.node.setScale(cc.Vec3.ONE);
+        v_pSoundGroupHelper.node.setScale(1);
 
         // TODO: handling audio mix group via cocos.
 
@@ -341,7 +341,7 @@ export default class SoundComponent extends FrameworkComponent {
 
         v_pSoundAgentHelper.node.name = `Sound Agent Helper - ${soundGroupName} - ${index}`;
         v_pSoundAgentHelper.node.parent = soundGroupHelper.node;
-        v_pSoundAgentHelper.node.setScale(cc.Vec3.ONE);
+        v_pSoundAgentHelper.node.setScale(1);
 
         // TODO: handling audio mix group via cocos.
         this.m_pSoundManager.addSoundAgentHelper(soundGroupName, v_pSoundAgentHelper);

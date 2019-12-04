@@ -127,7 +127,7 @@ export default class DataTableComponent extends FrameworkComponent {
 
         v_pDataTableHelper.node.name = "Data Table Helper";
         v_pDataTableHelper.node.parent = this.node;
-        v_pDataTableHelper.node.setScale(cc.Vec3.ONE);
+        v_pDataTableHelper.node.setScale(1);
 
         this.m_pDataTableManager.dataTableHelper = v_pDataTableHelper;
     }

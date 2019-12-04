@@ -66,9 +66,7 @@ export default class DefaultSoundAgentHelper extends SoundAgentHelperBase {
             this.m_pAudioSource.volume = 0;
             let v_pFadeToVolume: cc.Tween = new cc.Tween();
             v_pFadeToVolume.target(this.m_pAudioSource);
-            v_pFadeToVolume.set({
-                volume: 0
-            });
+            v_pFadeToVolume.by(0, { volume: 0 }, null);
             v_pFadeToVolume.to(fadeInSeconds, { volume: v_fVolume }, null);
             v_pFadeToVolume.start();
         }

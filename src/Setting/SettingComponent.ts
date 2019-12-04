@@ -36,7 +36,7 @@ export default class SettingComponent extends FrameworkComponent {
 
         v_pSettingHelper.node.name = 'Setting Helper';
         v_pSettingHelper.node.parent = this.node;
-        v_pSettingHelper.node.setScale(cc.Vec3.ONE);
+        v_pSettingHelper.node.setScale(1);
 
         this.m_pSettingManager.settingHelper = v_pSettingHelper;
     }

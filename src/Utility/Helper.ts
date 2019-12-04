@@ -24,7 +24,7 @@ export default /* static */ class Helper {
         if (helperClassName) {
             for (const k in g_pHelpers) {
                 if (k === helperClassName) {
-                    let v_pNode: cc.PrivateNode = new cc.PrivateNode();
+                    let v_pNode: cc.Node = new cc.Node();
                     let v_pClassType: Function = cc.js.getClassByName(helperClassName);
                     if (null == v_pClassType && helperClassName in g_pHelpers) {
                         v_pClassType = g_pHelpers[helperClassName];

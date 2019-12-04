@@ -154,7 +154,7 @@ export default class UIComponent extends FrameworkComponent {
 
         v_pUiFormHelper.node.name = "UI Form Helper";
         v_pUiFormHelper.node.setParent(this.node);
-        v_pUiFormHelper.node.setScale(cc.Vec3.ONE);
+        v_pUiFormHelper.node.setScale(1);
 
         this.m_rUIManager.instanceAutoReleaseInterval = this.m_fInstanceAutoReleaseInterval;
         this.m_rUIManager.instanceCapacity = this.m_uInstanceCapacity;
@@ -166,7 +166,7 @@ export default class UIComponent extends FrameworkComponent {
         if (null == this.m_pInstanceRoot) {
             this.m_pInstanceRoot = new cc.Node('UI Form Instances');
             this.m_pInstanceRoot.setParent(this.node);
-            this.m_pInstanceRoot.setScale(cc.Vec3.ONE);
+            this.m_pInstanceRoot.setScale(1);
         }
 
         // this.m_pInstanceRoot.layer = LayerMask.name2Layer['UI'];
@@ -294,7 +294,7 @@ export default class UIComponent extends FrameworkComponent {
         uiGroupHelper.node.name = `UI Group - ${uiGroupName}`;
         // uiGroupHelper.layer
         uiGroupHelper.node.setParent(this.m_pInstanceRoot);
-        uiGroupHelper.node.setScale(cc.Vec3.ONE);
+        uiGroupHelper.node.setScale(1);
 
         return this.m_rUIManager.addUIGroup(uiGroupName, depth, uiGroupHelper);
     }

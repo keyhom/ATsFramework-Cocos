@@ -114,7 +114,56 @@ declare namespace atsframework {
     // DataNodeManager
     ////////////////////////////////////////////////////////////////////////////
 
+    export class DataNode {
+        public static create(name: string, parent: DataNode | null): DataNode;
+
+        name: string;
+        fullName: string;
+        parent: DataNode | null;
+        childCount: number;
+
+        getData<T>(): T;
+        setData(data: any): void;
+
+        getChild(name: string): DataNode | null;
+        getChild(index: number): DataNode | null;
+
+        getOrAddChild(name: string): DataNode;
+
+        getAllChild(): DataNode[];
+        getAllChild(results: DataNode[]): DataNode[];
+
+        removeChild(name: string): void;
+        removeChild(index: number): void;
+
+        destory(): void;
+        clear(): void;
+
+        toDataString(): string;
+        toString(): string;
+
+    } // class DataNode
+
     export class DataNodeManager extends FrameworkModule {
+
+        root: DataNode;
+
+        getData<T>(path: string): T;
+        getData<T>(path: string, node: DataNode): T;
+
+        setData<T>(path: string, data: T): void;
+        setData<T>(path: string, data: T, node: DataNode): void;
+
+        getNode(path: string): DataNode | null;
+        getNode(path: string, node: DataNode): DataNode | null;
+
+        getOrAddNode(path: string): DataNode;
+        getOrAddNode(path: string, node: DataNode): DataNode;
+
+        removeNode(path: string): void;
+        removeNode(path: string, node: DataNode): void;
+
+        clear(): void;
 
         protected update(elapsed: number, realElapsed: number): void;
         protected shutdown(): void;

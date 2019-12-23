@@ -2,6 +2,7 @@ import SettingHelperBase from "../SettingHelperBase";
 import { helper } from "../../Utility/Helper";
 
 @helper
+@cc._decorator.ccclass
 class DefaultSettingHelper extends SettingHelperBase {
 
     load(): boolean {

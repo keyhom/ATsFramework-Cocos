@@ -1,6 +1,3 @@
-const { ccclass } = cc._decorator;
-
-@ccclass
 export default abstract class ResourceLoaderBase extends cc.Component implements atsframework.IResourceLoader {
 
     abstract hasAsset(assetName: string): boolean;

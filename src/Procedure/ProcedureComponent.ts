@@ -16,23 +16,34 @@ type ProcedureType = new () => ProcedureBase;
 
 const { ccclass, property, disallowMultiple, menu, inspector } = cc._decorator;
 
+const g_pRegisterProcedureNames: string[] = [];
 const g_pRegisterProcedures: ProcedureType[] = [];
 
 function getProcedureType(className: string): ProcedureType {
-    for (const procedure of g_pRegisterProcedures) {
-        if (cc.js.getClassName(procedure) === className) {
-            return procedure;
+    if (CC_DEV) {
+        for (const procedure of g_pRegisterProcedures) {
+            if (cc.js.getClassName(procedure) === className) {
+                return procedure;
+            }
+        }
+    } else {
+        let idx: number = g_pRegisterProcedureNames.indexOf(className);
+        if (idx != -1) {
+            return g_pRegisterProcedures[idx];
         }
     }
     return null;
 }
 
-export function procedure(constructor: new () => ProcedureBase) {
-    let v_bIsProcedure: boolean = cc.js.isChildClassOf(constructor, ProcedureBase);
-    if (v_bIsProcedure) {
-        // cc.log(`Register Procedure Class: ${cc.js.getClassName(constructor)}`);
-        g_pRegisterProcedures.push(constructor);
-    }
+export function procedure(name: string): Function {
+    return (constructor: new() => ProcedureBase) => {
+        let v_bIsProcedure: boolean = cc.js.isChildClassOf(constructor, ProcedureBase);
+        if (v_bIsProcedure) {
+            // cc.log(`Register Procedure Class: ${cc.js.getClassName(constructor)}`);
+            g_pRegisterProcedureNames.push(name);
+            g_pRegisterProcedures.push(constructor);
+        }
+    };
 }
 
 @ccclass
@@ -42,10 +53,13 @@ export function procedure(constructor: new () => ProcedureBase) {
 export default class ProcedureComponent extends FrameworkComponent {
 
     private static getAllProcedureNames<T extends ProcedureBase>(): string[] {
-        return g_pRegisterProcedures.map((value: ProcedureType) => {
-            // return (<any>value).name;
-            return cc.js.getClassName(value);
-        });
+        if (CC_DEV)
+            return g_pRegisterProcedures.map((value: ProcedureType) => {
+                // return (<any>value).name;
+                return cc.js.getClassName(value);
+            });
+        else
+            return g_pRegisterProcedureNames.slice();
     }
 
     @property({

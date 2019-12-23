@@ -2,6 +2,7 @@ import SoundAgentHelperBase from "../SoundAgentHelperBase";
 import { helper } from "../../Utility/Helper";
 
 @helper
+@cc._decorator.ccclass
 export default class DefaultSoundAgentHelper extends SoundAgentHelperBase {
 
     private m_pAudioSource: cc.AudioSource = null;

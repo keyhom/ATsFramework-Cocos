@@ -10,6 +10,7 @@ type FrameworkModule = atsframework.FrameworkModule;
 const FrameworkModule = atsframework.FrameworkModule;
 
 @helper
+@cc._decorator.ccclass
 export default class DefaultConfigHelper extends ConfigHelperBase {
 
     private m_pResourceComponent: ResourceComponent = null;

@@ -5,6 +5,7 @@ import FrameworkComponent from "../../Base/FrameworkComponent";
 import DataTableComponent from "../DataTableComponent";
 
 @helper
+@cc._decorator.ccclass
 export default class DefaultDataTableHelper extends DataTableHelperBase {
 
     private m_pResourceComponent!: ResourceComponent;

@@ -2,6 +2,7 @@ import ResourceLoaderBase from "../ResourceLoaderBase";
 import { helper } from "../../Utility/Helper";
 
 @helper
+@cc._decorator.ccclass
 export default class DefaultResourceLoader extends ResourceLoaderBase implements atsframework.IResourceLoader {
 
     hasAsset(assetName: string): boolean {

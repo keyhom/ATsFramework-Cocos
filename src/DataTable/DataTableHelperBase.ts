@@ -1,6 +1,5 @@
 import { LoadDataTableInfo } from "./DataTableComponent";
 
-@cc._decorator.ccclass
 export default abstract class DataTableHelperBase extends cc.Component implements atsframework.IDataTableHelper {
 
     loadDataTable(dataTableAsset: object, loadType: atsframework.LoadType, userData: atsframework.UserData): boolean {

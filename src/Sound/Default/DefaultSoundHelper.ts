@@ -4,6 +4,7 @@ import FrameworkComponent from "../../Base/FrameworkComponent";
 import { helper } from "../../Utility/Helper";
 
 @helper
+@cc._decorator.ccclass
 export default class DefaultSoundHelper extends SoundHelperBase {
 
     private m_pResourceComponent!: ResourceComponent;

@@ -5,6 +5,7 @@ import Entity from "../Entity";
 import FrameworkComponent from "../../Base/FrameworkComponent";
 
 @helper
+@cc._decorator.ccclass
 export default class DefaultEntityHelper extends EntityHelperBase {
 
     private m_pResourceComponent!: ResourceComponent;

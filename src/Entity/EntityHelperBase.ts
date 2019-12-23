@@ -1,5 +1,4 @@
 
-@cc._decorator.ccclass
 export default abstract class EntityHelperBase extends cc.Component implements atsframework.IEntityHelper {
 
     abstract instantiateEntity(entityAsset: object): object;

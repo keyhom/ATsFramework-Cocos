@@ -29,7 +29,7 @@ Vue.component('atsframework-datatable-inspector', {
     }),
     watch: {
         dataTableHelperIdx(newIdx, oldIdx) {
-            if (newIdx == oldIdx)
+            if (newIdx == oldIdx || newIdx < 0)
                 return;
 
             var v_sDataTableHelperName = this.dataTableHelperOptions[newIdx];

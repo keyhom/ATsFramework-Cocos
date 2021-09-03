@@ -59,7 +59,7 @@ Vue.component('atsframework-sound-inspector', {
     }),
     watch: {
         soundHelperIdx(newIdx, oldIdx) {
-            if (newIdx == oldIdx)
+            if (newIdx == oldIdx || newIdx < 0)
                 return;
 
             var v_sSoundHelperName = this.soundHelperOptions[newIdx];
@@ -71,7 +71,7 @@ Vue.component('atsframework-sound-inspector', {
             });
         },
         soundGroupHelperIdx(newIdx, oldIdx) {
-            if (newIdx == oldIdx)
+            if (newIdx == oldIdx || newIdx < 0)
                 return;
 
             var v_sHelperName = this.soundGroupHelperOptions[newIdx];
@@ -83,7 +83,7 @@ Vue.component('atsframework-sound-inspector', {
             });
         },
         soundAgentHelperIdx(newIdx, oldIdx) {
-            if (newIdx == oldIdx)
+            if (newIdx == oldIdx || newIdx < 0)
                 return;
 
             var v_sHelperName = this.soundAgentHelperOptions[newIdx];

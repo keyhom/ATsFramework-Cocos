@@ -35,6 +35,15 @@ function getProcedureType(className: string): ProcedureType {
     return null;
 }
 
+// export function procedure(constructor: Function): void {
+//     let v_bIsProcedure: boolean = cc.js.isChildClassOf(constructor, ProcedureBase);
+//     if (v_bIsProcedure) {
+//         g_pRegisterProcedureNames.push(cc.js.getClassName(constructor));
+//         g_pRegisterProcedures.push(constructor as any);
+//         // cc.log(`Register Procedure Class: ${cc.js.getClassName(constructor)}`);
+//     }
+// }
+
 export function procedure(name: string): Function {
     return (constructor: new() => ProcedureBase) => {
         let v_bIsProcedure: boolean = cc.js.isChildClassOf(constructor, ProcedureBase);
@@ -53,7 +62,7 @@ export function procedure(name: string): Function {
 export default class ProcedureComponent extends FrameworkComponent {
 
     private static getAllProcedureNames<T extends ProcedureBase>(): string[] {
-        if (CC_DEV)
+        if (CC_DEV && g_pRegisterProcedures.length > 0)
             return g_pRegisterProcedures.map((value: ProcedureType) => {
                 // return (<any>value).name;
                 return cc.js.getClassName(value);

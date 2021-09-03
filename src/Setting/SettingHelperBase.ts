@@ -1,3 +1,4 @@
+@cc._decorator.ccclass
 export default abstract class SettingHelperBase extends cc.Component implements atsframework.ISettingHelper {
 
     abstract load(): boolean;

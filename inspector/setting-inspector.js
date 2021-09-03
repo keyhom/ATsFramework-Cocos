@@ -27,7 +27,7 @@ Vue.component('atsframework-setting-inspector', {
     }),
     watch: {
         settingHelperIdx(newIdx, oldIdx) {
-            if (newIdx == oldIdx)
+            if (newIdx == oldIdx || newIdx < 0)
                 return;
 
             var v_sSettingHelperName = this.settingHelperOptions[newIdx];

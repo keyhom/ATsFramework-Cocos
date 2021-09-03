@@ -27,7 +27,7 @@ Vue.component('atsframework-resource-inspector', {
     }),
     watch: {
         resourceLoaderIdx(newIdx, oldIdx) {
-            if (newIdx == oldIdx)
+            if (newIdx == oldIdx || newIdx < 0)
                 return;
 
             var v_sResourceLoaderName = this.resourceLoaderOptions[newIdx];

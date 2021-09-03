@@ -39,7 +39,7 @@ Vue.component('atsframework-entity-inspector', {
     }),
     watch: {
         entityHelperIdx(newIdx, oldIdx) {
-            if (newIdx == oldIdx)
+            if (newIdx == oldIdx || newIdx < 0)
                 return;
             var value = this.entityHelperOptions[newIdx];
             Editor.Ipc.sendToPanel('scene', 'scene:set-property', {
@@ -50,7 +50,7 @@ Vue.component('atsframework-entity-inspector', {
             });
         },
         entityGroupHelperIdx() {
-            if (newIdx == oldIdx)
+            if (newIdx == oldIdx || newIdx < 0)
                 return;
             var value = this.entityGroupHelperOptions[newIdx];
             Editor.Ipc.sendToPanel('scene', 'scene:set-property', {

@@ -30,6 +30,8 @@ Vue.component('atsframework-config-inspector', {
     watch: {
         configHelperIdx(newIdx, oldIdx) {
             var v_sConfigHelperName = this.configHelperOptions[newIdx];
+            if (newIdx < 0 || newIdx == oldIdx)
+                return;
             Editor.Ipc.sendToPanel('scene', 'scene:set-property', {
                 id: this.target.uuid.value,
                 path: 'm_sConfigHelperTypeName',

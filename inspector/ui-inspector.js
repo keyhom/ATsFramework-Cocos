@@ -73,7 +73,7 @@ Vue.component('atsframework-ui-inspector', {
     }),
     watch: {
         uiFormHelperIndex(newIdx, oldIdx) {
-            if (newIdx == oldIdx)
+            if (newIdx == oldIdx || newIdx < 0)
                 return;
 
             var value = this.uiFormHelperClassOptions[newIdx];
@@ -85,7 +85,7 @@ Vue.component('atsframework-ui-inspector', {
             });
         },
         uiGroupHelperIndex(newIdx, oldIdx) {
-            if (newIdx == oldIdx)
+            if (newIdx == oldIdx || newIdx < 0)
                 return;
 
             var value = this.uiGroupHelperClassOptions[newIdx];

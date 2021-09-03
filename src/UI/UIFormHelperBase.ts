@@ -5,6 +5,7 @@ type IUIGroup = atsframework.IUIGroup;
 type IUIForm = atsframework.IUIForm;
 type UserData = atsframework.UserData;
 
+@cc._decorator.ccclass
 export default abstract class UIFormHelperBase extends cc.Component implements IUIFormHelper {
 
     abstract instantiateUIForm<T extends object>(uiFormAsset: T): T;

@@ -539,6 +539,112 @@ declare namespace atsframework {
     } // class FsmManager
 
     //////////////////////////////////////////////////////////////////
+    // NetworkManager
+    //////////////////////////////////////////////////////////////////
+
+    export enum NetworkErrorCode {
+        Unknown = 0,
+        AddressFamilyError,
+        SocketError,
+        SerializeError,
+        DeserializePacketHeadError,
+        DeserializePacketError,
+        ConnectError,
+        SendError,
+        ReceiveError
+    } // enum NetworkErrorCode
+
+    export type NetworkConnectedEventHandler = (networkChannel: NetworkChannel, userData: UserData) => void;
+    export type NetworkClosedEventHandler = (networkChannel: NetworkChannel) => void;
+    export type NetworkMissHeartBeatEventHandler = (networkChannel: NetworkChannel, missCount: number) => void;
+    export type NetworkErrorEventHandler = (networkChannel: NetworkChannel, errorCode: NetworkErrorCode, errorMessage: string) => void;
+    export type NetworkCustomErrorEventHander = (networkChannel: NetworkChannel, customErrorData: any) => void;
+
+    export const DefaultHeartBeatInterval: number;
+
+    export interface INetworkChannelHelper {
+
+        channelOpened: NetworkConnectedEventHandler;
+        channelClosed: NetworkClosedEventHandler;
+        channelError: NetworkErrorEventHandler;
+
+        id: number;
+        isOpen: boolean;
+        isActive: boolean;
+        isWritable: boolean;
+        isReadable: boolean;
+
+        connect(host: string, port: number): void;
+        connect(host: string, port: number, timeout: number): void;
+
+        disconnect(): void;
+        close(): void;
+        read(): void;
+        write(msg: any): void;
+        flush(): void;
+        writeAndFlush(msg: any): void;
+
+        packetHeaderLength: number;
+
+        initialize(networkChannel: NetworkChannel): void;
+
+        shutdown(): void;
+
+        sendHeartBeat(): boolean;
+
+        serialize<T>(packet: T, /*destination: Stream*/): boolean;
+
+        // deserializePacketHeader(source: Stream, customErrorData: object): IPacketHeader;
+
+        // deserializePacket(packetHeader: IPacketHeader, source: Stream, customErrorData: object): Packet;
+
+    } // interface INetworkChannelHelper
+
+    export class NetworkChannel {
+        networkChannelOpened: EventHandler<NetworkConnectedEventHandler>;
+        networkChannelClosed: EventHandler<NetworkClosedEventHandler>;
+        networkChannelMissHeartBeat: EventHandler<NetworkMissHeartBeatEventHandler>;
+        networkChannelError: EventHandler<NetworkErrorEventHandler>;
+        networkChannelCustomError: EventHandler<NetworkCustomErrorEventHander>;
+
+        id: number;
+        name: string;
+        userData: UserData;
+
+        connect(host: string, port: number): void;
+        connect(host: string, port: number, userData: UserData): void;
+
+        close(): void;
+        update(elapsed: number, realElapsed: number): void;
+        shutdown(): void;
+
+    } // class NetworkChannel
+
+    export class NetworkManager extends FrameworkModule {
+
+        networkChannelCount: number;
+        networkConnected: EventHandler<NetworkConnectedEventHandler>;
+        networkClosed: EventHandler<NetworkClosedEventHandler>;
+        networkMissHeartBeat: EventHandler<NetworkMissHeartBeatEventHandler>;
+        networkError: EventHandler<NetworkErrorEventHandler>;
+        networkCustomError: EventHandler<NetworkCustomErrorEventHander>;
+
+        hasNetworkChannel(name: string): boolean;
+        getNetworkChannel(name: string): NetworkChannel | null;
+
+        getAllNetworkChannels(): NetworkChannel[];
+        getAllNetworkChannels(results: NetworkChannel[]): NetworkChannel[];
+
+        createNetworkChannel(name: string, networkChannelHelper: INetworkChannelHelper): NetworkChannel;
+
+        destroyNetworkChannel(name: string): boolean;
+
+        protected update(elapsed: number, realElapsed: number): void;
+        protected shutdown(): void;
+
+    } // class NetworkManager
+
+    //////////////////////////////////////////////////////////////////
     // ObjectPoolManager
     //////////////////////////////////////////////////////////////////
 
